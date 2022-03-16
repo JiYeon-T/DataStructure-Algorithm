@@ -1,5 +1,7 @@
 #include "LinkList.h"
-#include <stdio.h>
+
+
+// 增 删 改 查
 
 //链表测试函数
 void linklist_test()
@@ -32,7 +34,7 @@ void linklist_test()
 * @param[in]  L pointer to head node
 * @param[in]  size
 */
-status Init_L(LinkList L, unsigned int size)
+Status Init_L(LinkList L, unsigned int size)
 {
 
 }
@@ -41,7 +43,7 @@ status Init_L(LinkList L, unsigned int size)
 * @fun: traverse linklist
 * @param[in]  head pointer to head node
 */
-status Traverse_L(LinkList head)
+Status Traverse_L(LinkList head)
 {
     if(head == NULL){
         return ERROR;

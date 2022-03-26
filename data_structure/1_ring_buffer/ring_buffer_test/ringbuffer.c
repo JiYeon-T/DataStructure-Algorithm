@@ -1,3 +1,13 @@
+/**
+ * @file ringbuffer.c
+ * @author your name (you@domain.com)
+ * @brief ringbuffer 常用在串口缓冲, 网络接收数据等等...
+ * @version 0.1
+ * @date 2022-03-26
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "ringbuffer.h"
 
 /*

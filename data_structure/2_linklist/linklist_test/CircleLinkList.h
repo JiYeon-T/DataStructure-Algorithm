@@ -6,10 +6,16 @@ typedef struct
 {
     ElemType data;
     struct Node_CL *next;
-} Node_CL, *CLinkList;
+} Node_CL, *LinkList_CL;
 //typedef struct Node* CLinkList;
 
-void Init_CL(CLinkList head, size_t size);
+LinkList_CL Init_CL(size_t size);
+Status Traverse_CL(LinkList_CL CL);
+Status GetElem_CL(LinkList_CL CL, size_t index, ElemType *data);
+Status Delete_CL(LinkList_CL head, ElemType nodeVal);
+Status Insert_CL(LinkList_CL head, ElemType nodeVal, ElemType insertVal);
+Status Deinit_CL(LinkList_CL head);
+
 void Test_CL();
 
 #endif

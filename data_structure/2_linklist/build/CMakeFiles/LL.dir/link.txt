@@ -1,2 +1,0 @@
-C:/MinGW/bin/ar.exe qc libLL.a CMakeFiles/LL.dir/linklist_test/CircleLinkList.c.obj CMakeFiles/LL.dir/linklist_test/DoubleLinkList.c.obj CMakeFiles/LL.dir/linklist_test/LinkList.c.obj CMakeFiles/LL.dir/linklist_test/StaticLinkList.c.obj
-C:/MinGW/bin/ranlib.exe libLL.a

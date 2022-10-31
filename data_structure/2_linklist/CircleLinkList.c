@@ -1,8 +1,8 @@
 /**
  * @file CircleLinkList.c
  * @author your name (you@domain.com)
- * @brief Ê×Î²ÏàÁ¬µÄÁ´±í, Ñ­»·ÖÕÖ¹Ìõ¼ş±ä³ÉÁËÅĞ¶Ï temp->next!=head, ÊÇ·ñÎªÍ·Ö¸Õë
- *        (1) Èç¹û²»ÊÊÓÃÍ·½Úµã, ¾ÍĞèÒªÊ¹ÓÃ Î²Ö¸ÕëÀ´±£´æ Î²°ÍÎ»ÖÃĞÅÏ¢
+ * @brief é¦–å°¾ç›¸è¿çš„é“¾è¡¨, å¾ªç¯ç»ˆæ­¢æ¡ä»¶å˜æˆäº†åˆ¤æ–­ temp->next!=head, æ˜¯å¦ä¸ºå¤´æŒ‡é’ˆ
+ *        (1) å¦‚æœä¸é€‚ç”¨å¤´èŠ‚ç‚¹, å°±éœ€è¦ä½¿ç”¨ å°¾æŒ‡é’ˆæ¥ä¿å­˜ å°¾å·´ä½ç½®ä¿¡æ¯
  * @version 0.1
  * @date 2022-03-16
  *
@@ -10,16 +10,18 @@
  *
  */
 #include "CircleLinkList.h"
+#include <stdlib.h>
+#include <time.h>
+#include <limits.h>
 
-#if CIRCLE_LINK_LIST
 
 /**
- * @brief ³õÊ¼»¯Ñ­»·Á´±í(Ã»ÓĞÍ·½Úµã)
- *        Î²²å·¨(Èç¹ûÃ»ÓĞÍ·½ÚµãµÄÁ´±í¾ÍĞèÒªÁ½¸öÖ¸ÕëÒ»¸öÍ·Ö¸Õë, Ò»¸öÎ²Ö¸Õë£¬·ñÔòÃ¿´Î´´½¨¶¼Òª±éÀú)
- * @param head Í·Ö¸Õë
- * @param size Á´±í´óĞ¡
+ * @brief åˆå§‹åŒ–å¾ªç¯é“¾è¡¨(æ²¡æœ‰å¤´èŠ‚ç‚¹)
+ *        å°¾æ’æ³•(å¦‚æœæ²¡æœ‰å¤´èŠ‚ç‚¹çš„é“¾è¡¨å°±éœ€è¦ä¸¤ä¸ªæŒ‡é’ˆä¸€ä¸ªå¤´æŒ‡é’ˆ, ä¸€ä¸ªå°¾æŒ‡é’ˆï¼Œå¦åˆ™æ¯æ¬¡åˆ›å»ºéƒ½è¦éå†)
+ * @param head å¤´æŒ‡é’ˆ
+ * @param size é“¾è¡¨å¤§å°
  */
-LinkList_CL Init_CL(size_t size)
+LinkList_CL InitLinkListWithRandom_CL(size_t size)
 {
     if(size <= 0){
         return ERROR;
@@ -31,17 +33,23 @@ LinkList_CL Init_CL(size_t size)
     pHead->data = data++;
     pHead->next = pHead;
     pTail = pHead;
+    srand(time(0));
 
     for(size_t ix = 0; ix < size-1; ++ix){
-        //ĞŞ¸ÄÍ·Ö¸ÕëµÄÖµ head
+        //ä¿®æ”¹å¤´æŒ‡é’ˆçš„å€¼ head
         LinkList_CL temp = (LinkList_CL)malloc(sizeof(Node_CL) * 1);
-        temp->data = data++;
+        temp->data = rand() % 100;
         temp->next = pHead;
         pTail->next = temp;
         pTail = temp;
     }
 
     return pHead;
+}
+
+Status InitLinkListWithArray_CL()
+{
+
 }
 
 /**
@@ -55,17 +63,18 @@ Status Traverse_CL(LinkList_CL CL)
     }
     LinkList curr = CL;
 
-    while(curr->next != CL){ // Ñ­»·½áÊøÌõ¼ş temp->next ÊÇ·ñµÈÓÚÍ·Ö¸Õë
+    while(curr->next != CL){ // å¾ªç¯ç»“æŸæ¡ä»¶ temp->next æ˜¯å¦ç­‰äºå¤´æŒ‡é’ˆ
         printf("%d -> ", curr->data);
         curr = curr->next;
     }
-    printf("%d\n", curr->data); // ´òÓ¡×îºóÒ»¸ö½ÚµãµÄĞÅÏ¢
+    printf("%d\n", curr->data); // æ‰“å°æœ€åä¸€ä¸ªèŠ‚ç‚¹çš„ä¿¡æ¯
 
     return OK;
 }
 
+
 /**
- * @brief ²éÕÒ
+ * @brief æŸ¥æ‰¾
  * @param[in] CL head pointer
  * @param[in] index start from 0
  * @param[out] *data
@@ -93,7 +102,7 @@ Status GetElem_CL(LinkList_CL CL, size_t index, ElemType *data)
 
 
 /**
- * @brief É¾³ı½Úµã
+ * @brief åˆ é™¤èŠ‚ç‚¹
  *
  * @param[in] head
  * @param[in] nodeVal
@@ -110,7 +119,7 @@ Status Delete_CL(LinkList_CL head, ElemType nodeVal)
         cur = cur->next;
     }
 
-    if(cur->next == head){ // ÒªÕÒµÄ½Úµã¾ÍÊÇµÚÒ»¸ö½ÚµãµÄÇé¿ö
+    if(cur->next == head){ // è¦æ‰¾çš„èŠ‚ç‚¹å°±æ˜¯ç¬¬ä¸€ä¸ªèŠ‚ç‚¹çš„æƒ…å†µ
         return ERROR;
     }
 
@@ -121,10 +130,10 @@ Status Delete_CL(LinkList_CL head, ElemType nodeVal)
 }
 
 /**
- * @brief ²åÈëÒ»¸ö½Úµã
+ * @brief æ’å…¥ä¸€ä¸ªèŠ‚ç‚¹
  *
  * @param[in] head
- * @param[in] nodeVal ÔÚ nodeVal ½ÚµãÇ°²åÈë insertVal ½Úµã
+ * @param[in] nodeVal åœ¨ nodeVal èŠ‚ç‚¹å‰æ’å…¥ insertVal èŠ‚ç‚¹
  * @param[in] insertVal
  */
 Status Insert_CL(LinkList_CL head, ElemType nodeVal, ElemType insertVal)
@@ -164,13 +173,13 @@ Status Deinit_CL(LinkList_CL head)
     }
 
     LinkList_CL curr = head;
-    while(curr->next != head){  // ÎªÊ²Ã´ÓĞÎÊÌâ????????????????????????????
+    while(curr->next != head){  // ä¸ºä»€ä¹ˆæœ‰é—®é¢˜????????????????????????????
         LinkList temp = curr;
         curr = curr->next;
         free(temp);
     }
 
-    // ´¦Àí×îºóÒ»¸ö½Úµã
+    // å¤„ç†æœ€åä¸€ä¸ªèŠ‚ç‚¹
     free(curr);
     head = NULL;
 
@@ -181,16 +190,16 @@ Status Deinit_CL(LinkList_CL head)
 
 void Test_CL()
 {
-    LinkList_CL head; // Ö¸ÕëÃ»ÓĞ³ÉÔ±±äÁ¿µÄËµ·¨, Ëü±¾Éí¾ÍÊÇÒ»¿éÄÚ´æµÄÊ×µØÖ·¶øÒÑ
+    LinkList_CL head; // æŒ‡é’ˆæ²¡æœ‰æˆå‘˜å˜é‡çš„è¯´æ³•, å®ƒæœ¬èº«å°±æ˜¯ä¸€å—å†…å­˜çš„é¦–åœ°å€è€Œå·²
     size_t listSize = 10;
     ElemType data;
     // Node_CL node;
     // node.data = 111;
     // node.next = NULL;
-    // head = &node; // head Ö¸Ïò node
+    // head = &node; // head æŒ‡å‘ node
     // printf("%d - %d\n", sizeof(head), sizeof(Node_CL));
-    // printf("head:%#p - &node:%#p, &head:%#p", head, &node, &head); // headµÄÖµ¾ÍÊÇ node µÄÊ×µØÖ·
-    head = Init_CL(listSize);
+    // printf("head:%#p - &node:%#p, &head:%#p", head, &node, &head); // headçš„å€¼å°±æ˜¯ node çš„é¦–åœ°å€
+    head = InitLinkListWithRandom_CL(listSize);
     Traverse_CL(head);
 
     Insert_CL(head, 4, 1000);
@@ -208,4 +217,345 @@ void Test_CL()
     Traverse_CL(head);
 }
 
-#endif
+/************************************************* åŒ…å«å¤´ç»“ç‚¹ ***************************************************************/
+/**
+ * @brief initialize a circle linklist
+ *        åŒ…å«å¤´ç»“ç‚¹çš„å¾ªç¯é“¾è¡¨, å¤´ç»“ç‚¹ä¸åŒ…å«æ•°æ®
+ *        å¾ªç¯ç»“æŸæ¡ä»¶; å°¾ç»“ç‚¹çš„ next æŒ‡é’ˆæ˜¯å¦ç­‰äºå¤´æŒ‡é’ˆ(å¤´ç»“ç‚¹çš„åœ°å€)
+ *
+ * @param cl
+ * @return Status
+ */
+Status InitLinkList_CL_v2(LinkList_CL *cl)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    // create head node
+    Node_CL *temp = (Node_CL*)malloc(sizeof(Node_CL) * 1);
+    if(!temp){
+        printf("No enough memory\r\n");
+        return ERROR;
+    }
+    temp->data = INT_MAX;
+    temp->next = temp;
+    *cl = temp;
+
+    return OK;
+}
+
+/**
+ * @brief traverse
+ *
+ * @param cl head pointer, å¤´ç»“ç‚¹çš„åœ°å€
+ * @return Status
+ */
+Status Traverse_CL_v2(LinkList_CL cl)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    Node_CL *temp = cl->next;
+
+    printf("Traverse:\r\n");
+    while(temp != cl){
+        printf("%d ->", temp->data);
+        temp = temp->next;
+    }
+    printf("\r\n\r\n");
+
+    return OK;
+}
+
+/**
+ * @brief initialize circle linklist with array
+ *
+ * @param cl
+ * @return Status
+ */
+Status InitWithArray_CL_v2(LinkList_CL cl, ElemType *arr, size_t len)
+{
+    if(!cl || !arr || len <= 0){
+        return ERROR;
+    }
+    Node_CL *temp = cl->next;
+
+    for(int ix = 0; ix < len; ++ix){
+        // head/tail insert
+    }
+
+    return OK;
+}
+
+/**
+ * @brief head insert
+ *
+ * @param cl
+ * @param elem
+ * @return Status
+ */
+Status InsertHead_CL_v2(LinkList_CL cl, ElemType elem)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    Node_CL *temp = (Node_CL*)malloc(sizeof(Node_CL) * 1);
+    temp->data = elem;
+    temp->next = cl->next; // next node
+    cl->next = temp; // update first node
+
+    return OK;
+}
+
+/**
+ * @brief tail insert
+ *
+ * @param cl
+ * @param elem
+ * @return Status
+ */
+Status InsertTail_CL_v2(LinkList_CL cl, ElemType elem)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    Node *temp = cl->next, *prev = temp;
+
+    while (temp != cl) // ç»“æŸæ¡ä»¶ next != å¤´æŒ‡é’ˆ
+    {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    // allocate memory
+    temp = (Node_CL*)malloc(sizeof(Node_CL) * 1);
+    temp->data = elem;
+    temp->next = cl; // head pointer
+    prev->next = temp; // previous node's next poniter
+
+    return OK;
+}
+
+/**
+ * @brief remove the indexTh node 
+ * 
+ * @param cl 
+ * @param index index from 0
+ * @param elem 
+ * @return Status 
+ */
+Status RemoveElem_CL_v2(LinkList_CL cl, size_t index, ElemType *elem)
+{
+    if(!cl || !elem || index < 0){
+        return ERROR;
+    }
+
+    Node_CL *temp = cl->next, *prev = temp;
+    size_t jx = 0;
+
+    while(temp != cl && jx < index){
+        prev = temp;
+        ++jx;
+        temp = temp->next;
+    }
+
+    if(temp == cl || jx > index){
+        return ERROR;
+    }
+
+    *elem = temp->data;
+    prev->next = temp->next; // update next pointer
+    free(temp);
+
+    return OK;
+}
+
+/**
+ * @brief modify data
+ * 
+ * @param cl 
+ * @param index index from 0
+ * @param elem 
+ * @return Status 
+ */
+Status ModifyElem_CL_v2(LinkList_CL cl, size_t index, ElemType elem)
+{
+    if(!cl || index < 0){
+        return ERROR;
+    }
+
+    Node_CL *temp = cl->next;
+    size_t jx = 0;
+    while(temp != cl && jx < index){
+        ++jx;
+        temp = temp->next;
+    }
+
+    if(temp == cl || jx > index){
+        return ERROR;
+    }
+
+    temp->data = elem;
+
+    return OK;
+}
+
+/**
+ * @brief get elem
+ * 
+ * @param cl 
+ * @param index 
+ * @param elem 
+ * @return Status 
+ */
+Status GetElem_CL_v2(LinkList_CL cl, size_t index, ElemType *elem)
+{
+    if(!cl || index < 0 || !elem){
+        return ERROR;
+    }
+
+    Node_CL *temp = cl->next;
+    size_t jx = 0;
+    while(temp != cl && jx < index){
+        ++jx;
+        temp = temp->next;
+    }
+
+    if(temp == cl || jx > index){
+        return ERROR;
+    }
+
+    *elem = temp->data;
+
+    return OK;
+}
+
+/**
+ * @brief only clear data node
+ *        does not free head node
+ * 
+ * @param cl 
+ * @return Status 
+ */
+Status Clear_CL_v2(LinkList_CL cl)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    Node_CL *curr = cl->next;
+
+    while (curr != cl){
+        Node_CL *temp = curr;
+        cl->next = curr->next;
+        curr = curr->next;
+        free(temp); // free memory
+    }
+    
+    return OK;
+}
+
+/**
+ * @brief clear data node and head node
+ * 
+ * @param cl 
+ * @return Status 
+ */
+Status Deinit_CL_v2(LinkList_CL *cl)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    Node_CL *curr = (*cl)->next;
+
+    // clear data list
+    while (curr != (*cl)){
+        Node_CL *temp = curr;
+        (*cl)->next = curr->next;
+        curr = curr->next;
+        free(temp); // free memory
+    }
+
+    // clear head node
+    free((*cl));
+    *cl = NULL;
+
+    return OK;
+}
+
+
+
+void Test2_CL()
+{
+    LinkList_CL cl; // å¤´æŒ‡é’ˆ
+    ElemType data;
+    size_t idx;
+
+    InitLinkList_CL_v2(&cl);
+    Traverse_CL_v2(cl);
+
+    data = 111;
+    printf("insert:%d\r\n", data);
+    InsertHead_CL_v2(cl, data);
+    Traverse_CL_v2(cl);
+
+    data = 25;
+    printf("insert:%d\r\n", data);
+    InsertTail_CL_v2(cl, data);
+    Traverse_CL_v2(cl);
+
+    data = 100;
+    printf("insert:%d\r\n", data);
+    InsertHead_CL_v2(cl, data);
+    Traverse_CL_v2(cl);
+    
+    idx = 1;
+    RemoveElem_CL_v2(cl, idx, &data);
+    printf("remove index:%d\r\n", idx);
+    Traverse_CL_v2(cl);
+    printf("removed data:%d\r\n\r\n", data);
+
+    idx = 0;
+    data = -100;
+    printf("modify idx:%d val:%d\r\n", idx, data);
+    ModifyElem_CL_v2(cl, idx, data);
+    Traverse_CL_v2(cl);
+
+    idx = 1;
+    data = -200;
+    printf("modify idx:%d val:%d\r\n", idx, data);
+    ModifyElem_CL_v2(cl, idx, data);
+    Traverse_CL_v2(cl);
+
+    idx = 1;
+    printf("get index:%d\r\n", idx);
+    if(GetElem_CL_v2(cl, idx, &data) == OK){
+        printf("data:%d\r\n", data);
+    }
+    Traverse_CL_v2(cl);
+
+    idx = 2;
+    printf("get index:%d\r\n", idx);
+    if(GetElem_CL_v2(cl, idx, &data) == OK){
+        printf("data:%d\r\n", data);
+    }
+    else{
+        printf("get failed\r\n");
+    }
+    Traverse_CL_v2(cl);
+
+    Clear_CL_v2(cl);
+    printf("clear:\r\n");
+    Traverse_CL_v2(cl);
+
+    Deinit_CL_v2(&cl);
+    printf("Deinit:\r\n");
+    Traverse_CL_v2(cl);
+}
+
+// #endif

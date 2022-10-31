@@ -2,36 +2,37 @@
 #define LINKLIST_H_INCLUDED
 
 
-#include "head.h"
-#define LINK_LIST     1
-#if LINK_LIST
+#include "config.h"
+
+// #if LINK_LIST
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 
-/** ¶ş Á´±í **/
-// Ä¿Ç°µÄ type ½ö½ö±£´æµÄÊÇÒ»¸öÕûĞÍ, ÈçºÎÊµÏÖ±£´æÆäËûÊı¾İÀàĞÍ?
-/** Ó¦ÓÃ³¡¾° **/
-// (1)app app queue ÊÇÈçºÎÊµÏÖµÄ?
-// (2) Í¨¹ı½á¹¹ÌåÔªËØ»ñÈ¡½á¹¹ÌåÆäËûÔªËØµØÖ·, service_bt_list.c
+/** äºŒ é“¾è¡¨ **/
+// ç›®å‰çš„ type ä»…ä»…ä¿å­˜çš„æ˜¯ä¸€ä¸ªæ•´å‹, å¦‚ä½•å®ç°ä¿å­˜å…¶ä»–æ•°æ®ç±»å‹?
+/** åº”ç”¨åœºæ™¯ **/
+// (1)app app queue æ˜¯å¦‚ä½•å®ç°çš„?
+// (2) é€šè¿‡ç»“æ„ä½“å…ƒç´ è·å–ç»“æ„ä½“å…¶ä»–å…ƒç´ åœ°å€, service_bt_list.c
 typedef int ElemType;
 typedef int Status;
 #define OK      1
 #define ERROR   0
 typedef unsigned int size_t;
 
-//Á´±í
+//é“¾è¡¨
 typedef struct
 {
-    ElemType data;      // Êı¾İÓò
-    struct Node *next;  // Ö¸ÕëÓò
+    ElemType data;      // æ•°æ®åŸŸ
+    struct Node *next;  // æŒ‡é’ˆåŸŸ
 } Node, *LinkList;
+// typedef Node* LinkList;
 
-//ÓĞ/ÎŞÍ·½ÚµãÁ½ÖÖÇé¿ö
+//æœ‰/æ— å¤´èŠ‚ç‚¹ä¸¤ç§æƒ…å†µ
 
-/* ÓĞÍ·½Úµã */
+/* æœ‰å¤´èŠ‚ç‚¹ */
 LinkList InitHeadInsert_L(size_t size);
 LinkList InitTailInsert_L(size_t size);
 Status InitLinkListWithArray_L(LinkList *pHead, ElemType *pArr, size_t len);
@@ -39,15 +40,19 @@ Status GetElem_L(LinkList L, int i, ElemType *e);
 Status Insert_L(LinkList L, ElemType elem, ElemType insertElem);
 Status InserHead_L(LinkList L, ElemType data);
 Status InsertTail_L(LinkList L, ElemType data);
+Status InsertHead_L2(LinkList L, Node *pNode);
+Status InsertTail_L2(LinkList L, Node *pNode);
 Status Delete_L(LinkList L, ElemType deleteElem);
 Status Clear_L(LinkList L);
 Status Deinit_L(LinkList *L);
 Status SortLinkList_L(LinkList L1);
-Status MergeLinkList_L(LinkList L1, LinkList L2);
+LinkList MergeLinkList_L(LinkList L1, LinkList L2);
+LinkList MergeLinkList_L_v2(LinkList L1, LinkList L2);
 
 void linklist_test();
 void LinkListTest2();
+void LinkListTest3();
 
-#endif // LINKLIST
+// #endif // LINKLIST
 
 #endif // LINKLIST_H_INCLUDED

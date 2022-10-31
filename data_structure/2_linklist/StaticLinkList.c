@@ -1,256 +1,454 @@
-// ´Ó0-1 ºÍ ´Ó 1-100 È·ÊµÊÇ´Ó 0-1 ±È½ÏÄÑ
-// ĞĞ°ÙÀïÕß°ë¾ÅÊ®
+/**
+ * @file StaticLinkList.c
+ * @author your name (you@domain.com)
+ * @brief é™æ€é“¾è¡¨
+ * @version 0.1
+ * @date 2022-10-30
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+/***************************************************************************************************************/
+// 1.ä»0-1 å’Œ ä» 1-100 ç¡®å®æ˜¯ä» 0-1 æ¯”è¾ƒéš¾
+// 2.è¡Œç™¾é‡Œè€…åŠä¹å
 
-#if STATIC_LINK_LIST
 
 #include "StaticLinkList.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <limits.h>
+#include <stdbool.h>
 
-// ¶ÔÓÚÃ»ÓĞÖ¸ÕëµÄÆäËüÓïÑÔ, ¿ÉÒÔÊ¹ÓÃÕâÖÖ·½Ê½ÊµÏÖ¾²Ì¬Á´±í
-size_t headIndex = 0; // ÒÑ¾­Ê¹ÓÃÁ´±íµÄÍ·Ö¸Õë(Ë÷Òı), Í·Ö¸Õë²»±£´æÊı¾İ;headIndex=0 ±íÊ¾¿ÕÁ´±í, headIndex!=0±íÊ¾ÓĞÔªËØ
-size_t available_space = MAXSIZE;
+
+/** å¯¹äºæ²¡æœ‰æŒ‡é’ˆçš„å…¶å®ƒè¯­è¨€, å¯ä»¥ä½¿ç”¨è¿™ç§æ–¹å¼å®ç°é™æ€é“¾è¡¨ */
+
+
+
+/********************************************* å¼•å…¥å¤‡ç”¨é“¾è¡¨å¯¹ç©ºé—²èŠ‚ç‚¹è¿›è¡Œç®¡ç† *******************************************************/
+typedef struct {
+    // size_t maxSize;
+    // size_t availableHeadIndex; // å·²ç»ä½¿ç”¨é“¾è¡¨çš„å¤´æŒ‡é’ˆ(ç´¢å¼•), å¤´æŒ‡é’ˆä¸ä¿å­˜æ•°æ®; headIndex=0 è¡¨ç¤ºç©ºé“¾è¡¨, headIndex!=0è¡¨ç¤ºæœ‰å…ƒç´ 
+    // size_t available_space;    // å‰©ä½™å¯ç”¨ç©ºé—´
+    size_t dataLinkListIdx;       // æ•°æ®é“¾è¡¨èµ·å§‹ç´¢å¼•
+    size_t freeLinkListIdx;       // å¤‡ç”¨é“¾è¡¨èµ·å§‹ç´¢å¼•; å¿…é¡»ä½¿ç”¨å¤‡ç”¨é“¾è¡¨å¯¹æ‰€æœ‰ç©ºé—²èŠ‚ç‚¹è¿›è¡Œç®¡ç†, å¦åˆ™ä¸å¥½å¤„ç†;
+    bool initFlag;                // æ˜¯å¦åˆå§‹åŒ–çš„æ ‡å¿—, æ˜¯å¦åŒ…å«å¤´ç»“ç‚¹
+} LinkListManager_SL;
+
+static LinkListManager_SL _linkListManagerSL;
+
 
 /**
- * @brief  ¶¯Ì¬·ÖÅäÄÚ´æ, Ö»·ÖÅäÒ»¸ö½Úµã
+ * @brief static linklist intialization
+ *        æ•°ç»„å…ƒç´ åˆå§‹åŒ–ä¸ºå…¨ 0 è¿™ç§æ–¹æ³•ä¸å¥½æ
+ *
+ * @desc (1) æ•°ç»„ç¬¬ 0 ä¸ªèŠ‚ç‚¹ä¸ºå¤´ç»“ç‚¹;
+ *       (2) éå†ç»“æŸæ¡ä»¶: pNode.next == 0; // ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ä¸ºå¤´ç»“ç‚¹, åˆ™é“¾è¡¨å°¾éƒ¨
+ *       (3) å¤´ç»“ç‚¹çš„ next è®°å½•ç¬¬ä¸€ä¸ªèŠ‚ç‚¹(firstNode) çš„ä¸‹æ ‡;
+ *       (4) æœ€åä¸€ä¸ªèŠ‚ç‚¹(tailNode) çš„ next ä¸º 0;
+ *       (5) å¤´ç»“ç‚¹çš„æ•°æ®åŸŸä¸å­˜æ”¾æ•°æ® = INT_MAX;
+ *
+ *        ä¸ºäº†æ–¹ä¾¿ç®¡ç†, å°†å‰©ä½™ç©ºé—´ä¿å­˜åˆ°ä¸€ä¸ªå¤‡ç”¨é“¾è¡¨ä¸­, å¤‡ç”¨é“¾è¡¨çš„å¤´æŒ‡é’ˆä¿å­˜åœ¨ SLinkList[0].cur ä¸­
+ *        åˆå§‹åŒ–é“¾è¡¨ï¼ˆé»˜è®¤ç›´æ¥åŠ å…¥å¤‡ç”¨é“¾è¡¨ï¼‰
+ *        å¤´èŠ‚ç‚¹çš„ cur æŒ‡å‘å¤‡ç”¨é“¾è¡¨ç¬¬ä¸€ä¸ªå…ƒç´ 
+ *        æœ€åä¸€ä¸ªèŠ‚ç‚¹çš„ cur ä¸º 0
+ *        ä¸­é—´èŠ‚ç‚¹:cur = next_node.index;
+ */
+Status InitSpace_SL(LinkList_SL sL)
+{
+    // æ•°ç»„å…ƒç´ åˆå§‹åŒ–ä¸ºå…¨ 0 è¿™ç§æ–¹æ³•ä¸å¥½æ
+    // printf("address:%#p size:%ld\r\n", sL, sizeof(Node_SL) * MAXSIZE_SL);
+    // memset((uint8_t*)sL, 0, sizeof(Node_SL) * MAXSIZE_SL);
+    // sL[0].data = INT_MAX;
+    // sL[0].next = 0;
+    // for(int ix = 0; ix < MAXSIZE_SL; ++ix){
+    //     printf("sL[%d] data:%d next:%d\r\n", ix, sL[ix].data, sL[ix].next);
+    // }
+
+    return OK;
+}
+
+/**
+ * @brief ä¸ºäº†æ–¹ä¾¿ç®¡ç†, å°†å‰©ä½™ç©ºé—´ä¿å­˜åˆ°ä¸€ä¸ªå¤‡ç”¨é“¾è¡¨ä¸­, å¤‡ç”¨é“¾è¡¨çš„å¤´æŒ‡é’ˆä¿å­˜åœ¨ SLinkList[0].cur ä¸­
+ *        åˆå§‹åŒ–çš„æ—¶å€™å°±è®©æ‰€æœ‰å…ƒç´ éƒ½æ’åˆ—æˆä¸€ä¸ªé“¾è¡¨(å°±æ˜¯å¯¹ç©ºé—²å…ƒç´ é€šè¿‡é“¾è¡¨è¿›è¡Œç®¡ç†, åˆå§‹åŒ–:å…ƒç´ é“¾è¡¨ä¸ºç©º; ç©ºé—²é“¾è¡¨æœ‰ 99 ä¸ªå…ƒç´ (ä¸€ä¸ªå¤´ç»“ç‚¹ä¸ä¿å­˜))
+ *        0               1           2                   99
+ *        (INT_MAX, 1) -> (xxx, 2) -> (yyy, 3) -> .... -> (nnn, 0)
+ *        (1) æ•°æ®é“¾è¡¨å¤´ç»“ç‚¹ index = 0;
+ *        (2) å¤‡ç”¨é“¾è¡¨å¤´ç»“ç‚¹ index = 1;
+ *        (3) éœ€è¦å®šä¹‰ malloc() å’Œ free() ä»å¤‡ç”¨é“¾è¡¨åˆ†é…ä¸€ä¸ªèŠ‚ç‚¹;
+ *        (4) å®é™…ä¸Šåªæœ‰ MAXSIZE_SL - 2 ä¸ªå¯ç”¨çš„èŠ‚ç‚¹;
  *
  * @param sl
- * @return int ·µ»Ø·ÖÅäµÄ½ÚµãµÄÏÂ±ê
  */
-static int Malloc_SL(SLinkList sl)
+Status InitSpace_SL_v2(LinkList_SL sL) // component sl[MAXSIZE], æŒ‡é’ˆ
 {
-    if(!sl[0].cur){ // Ã»ÓĞ¿Õ¼ä
+    if(!sL){
+        return ERROR;
+    }
+    // æ•°æ®é“¾è¡¨åˆå§‹åŒ–, index = 0
+    _linkListManagerSL.dataLinkListIdx = 0;
+    sL[_linkListManagerSL.dataLinkListIdx].next = 0; // empty link list
+
+    // å¤‡ç”¨é“¾è¡¨åˆå§‹åŒ–
+    _linkListManagerSL.freeLinkListIdx = 1; // å¤‡ç”¨é“¾è¡¨å¤´ç»“ç‚¹ index = 1;
+    for(int ix = _linkListManagerSL.freeLinkListIdx; ix < MAXSIZE_SL; ++ix){ // 1 - 99
+        sL[ix].next = ix + 1;
+    }
+    sL[MAXSIZE_SL - 1].next = 0;    // æœ€åä¸€ä¸ªèŠ‚ç‚¹æŒ‡é’ˆåŸŸä¸º 0
+
+    _linkListManagerSL.initFlag = true;
+
+    return OK;
+}
+
+/**
+ * @brief deinit
+ * 
+ * @param sL 
+ * @return Status 
+ */
+Status DeinitSpace_SL(LinkList_SL sL)
+{
+    if(!sL || !_linkListManagerSL.initFlag){
+        return ERROR;
+    }
+
+    _linkListManagerSL.initFlag = false;
+
+    return OK;
+}
+
+/**
+ * @brief  åŠ¨æ€åˆ†é…å†…å­˜, åªåˆ†é…ä¸€ä¸ªèŠ‚ç‚¹
+ *
+ * @param sl
+ * @return int è¿”å›åˆ†é…çš„èŠ‚ç‚¹çš„ä¸‹æ ‡ index
+ */
+static int Malloc_SL(LinkList_SL sL)
+{
+    if(!sL || !_linkListManagerSL.initFlag){
         return -1;
     }
-    size_t temp = sl[0].cur;
-    sl[0].cur = sl[temp].cur;
+    if(sL[_linkListManagerSL.freeLinkListIdx].next == 0){ // æ²¡æœ‰ç©ºé—´
+        printf("No enough space\r\n");
+        return -1;
+    }
+
+    size_t temp = sL[_linkListManagerSL.freeLinkListIdx].next;
+    sL[_linkListManagerSL.freeLinkListIdx].next = sL[temp].next;
     return temp;
 }
 
 /**
- * @brief ÄÚ´æ»ØÊÕ, Êµ¼ÊÉÏ¾ÍÊÇ½«²»ÓÃµÄÄÚ´æ²åÈëµ½±¸ÓÃÁ´±í(Í·²å·¨)
+ * @brief å†…å­˜å›æ”¶, å®é™…ä¸Šå°±æ˜¯å°†ä¸ç”¨çš„å†…å­˜æ’å…¥åˆ°å¤‡ç”¨é“¾è¡¨(å¤´æ’æ³•)
+ *        å°†ä¸‹æ ‡åŠ å…¥åˆ°å¤‡ç”¨é“¾è¡¨å¤´éƒ¨
  *
  * @param sl
- * @param index ½«ÏÂ±íÎªindex µÄ½Úµã»ØÊÕµ½±¸ÓÃÁ´±í
+ * @param index å°†ä¸‹è¡¨ä¸ºindex çš„èŠ‚ç‚¹å›æ”¶åˆ°å¤‡ç”¨é“¾è¡¨
  */
-static void Free_SL(SLinkList sl, int index)
+static Status Free_SL(LinkList_SL sL, int index)
 {
-    sl[index].cur = sl[0].cur;
-    sl[0].cur = index;
-    return;
-}
-
-/**
- * @brief static linklist intialization
- *        ÎªÁË·½±ã¹ÜÀí, ½«Ê£Óà¿Õ¼ä±£´æµ½Ò»¸ö±¸ÓÃÁ´±íÖĞ, ±¸ÓÃÁ´±íµÄÍ·Ö¸Õë±£´æÔÚ SLinkList[0].cur ÖĞ
- *        ³õÊ¼»¯Á´±í£¨Ä¬ÈÏÖ±½Ó¼ÓÈë±¸ÓÃÁ´±í£©
- *        Í·½ÚµãµÄ cur Ö¸Ïò±¸ÓÃÁ´±íµÚÒ»¸öÔªËØ
- *        ×îºóÒ»¸ö½ÚµãµÄ cur Îª 0
- *        ÖĞ¼ä½Úµã:cur = next_node.index;
- */
-void InitSpace_SL(SLinkList sl) // component sl[MAXSIZE], Ö¸Õë
-{
-    for(int ix = 0; ix < MAXSIZE; ++ix){
-        sl[ix].cur = ix + 1;
+    if(!sL || index >= MAXSIZE_SL || !_linkListManagerSL.initFlag){
+        return ERROR;
     }
-    sl[MAXSIZE - 1].cur = 0;    //±ğÓÃÁ´±íµÄ×îºóÒ»¸ö½Úµã
-
-    return;
+    sL[index].next = sL[_linkListManagerSL.freeLinkListIdx].next;
+    sL[_linkListManagerSL.freeLinkListIdx].next = index;
+    return OK;
 }
 
 /**
- * @brief Init LinkList, Ê¹ÓÃËæ»úÊı³õÊ¼»¯Á´±í
+ * @brief Init LinkList, ä½¿ç”¨éšæœºæ•°åˆå§‹åŒ–é“¾è¡¨
+ *        ä»…ä»…é€‚ç”¨äºåŒ…å«å¤´ç»“ç‚¹çš„é“¾è¡¨çš„åˆå§‹åŒ–, è¦åˆ¤æ–­åˆå§‹åŒ–æ ‡å¿—ä½
  *
  */
-Status InitLinkList_SL(SLinkList sl, size_t size)
+Status InitLinkListWithRandom_SL(LinkList_SL sL, size_t size)
 {
-    component head; // Êµ¼ÊÉÏ¾ÍÆğ¸öÖ¸ÕëµÄ×÷ÓÃ
-    if(size > MAXSIZE){
-        printf("Not enough space\n");
+    if(!sL || !_linkListManagerSL.initFlag){
         return ERROR;
     }
 
-    head = sl[headIndex];
-    srand(time(0));
-    //³õÊ¼»¯¼ÙÉèÁ´±íÎª¿Õ, Ö±½Ó´ÓÍ·½Úµã¿ªÊ¼²åÈë
-    for(size_t ix = 0; ix < size; ++ix){
-        //printf("head.cur:%d\n", head.cur);
-        sl[head.cur].data = rand() % 10;
-        head = sl[head.cur];
+    if(size > MAXSIZE_SL -1){
+        printf("No enough space\n");
+        return ERROR;
     }
-    sl[head.cur - 1].cur = 0; // ×°ÔªËØµÄ×îºóÒ»¸öÔªËØµÄ cur
-    sl[0].cur = head.cur - 1;   // ±¸ÓÃÁ´±íµÄÊ×½Úµã
 
-    headIndex = 1; // ¸üĞÂÍ·Ö¸Õë
+    srand(time(0));
+    for(size_t ix = 0; ix < size; ++ix){
+        // å¤´æ’æ³•/å°¾æ’æ³•
+        // InsertTail_SL(sL, rand() % 100);
+        InsertHead_SL(sL, rand() % 100);
+    }
 
     return OK;
 }
 
 /**
- * @brief ±éÀúÁ´±í
- *        ÓĞÔªËØµÄÁ´±í ´Ó index=headIndex ¿ªÊ¼
- *        ±¸ÓÃÁ´±í´Ó index = SLinkList[0].cur ¿ªÊ¼, ×îºóÒ»¸öÔªËØ SLinkList[lastElem].cur = 0
+ * @brief Initialize static linklist with array
+ *        ä»…ä»…é€‚ç”¨äºç©ºé“¾è¡¨çš„åˆå§‹åŒ–
  *
+ * @param sl
+ * @param arr
+ * @param len
+ * @return Status
  */
-void Traverse_SL(SLinkList sl)
+Status InitLinkListWithArray_SL(LinkList_SL sL, ElemType *arr, size_t len)
 {
-    if(headIndex == 0){
-        printf("empty list\n");
-        return;
+    if(!sL || !arr || len <= 0 || !_linkListManagerSL.initFlag){
+        return ERROR;
     }
-    component head = sl[headIndex]; // ÒÆ¶¯µÄÖ¸Õë
+
+    for(int ix = 0; ix < len; ++ix){
+        InsertTail_SL(sL, arr[ix]);
+    }
+
+    return OK;
+}
+
+/**
+ * @brief éå†é“¾è¡¨(åŒ…å«å¤´ç»“ç‚¹)
+ *        æœ‰å…ƒç´ çš„é“¾è¡¨ ä» index=headIndex å¼€å§‹
+ *        å¤‡ç”¨é“¾è¡¨ä» index = SLinkList[0].cur å¼€å§‹, æœ€åä¸€ä¸ªå…ƒç´  SLinkList[lastElem].cur = 0
+ *
+ * @param sL linklist
+ */
+Status Traverse_SL(const LinkList_SL sL)
+{
+    if(!sL || !_linkListManagerSL.initFlag){
+        return ERROR;
+    }
+
+    if(sL[_linkListManagerSL.dataLinkListIdx].next == 0){
+        printf("empty list\n");
+        return ERROR;
+    }
+
+    size_t tempIdx = sL[_linkListManagerSL.dataLinkListIdx].next; // ç¬¬ 1 ä¸ªèŠ‚ç‚¹(ä¸åŒ…å«å¤´ç»“ç‚¹)
 
     printf("Traverse:\n");
-    while(head.cur != 0){ // ÉÙÁËÒ»´Î
-        printf("%d -> ", head.data);
-        head = sl[head.cur]; // pointer to next
+    while(tempIdx != 0){
+        printf("%d -> ", sL[tempIdx].data);
+        tempIdx = sL[tempIdx].next; // pointer to next
     }
-    printf("%d\n", head.data);
+    printf("\r\n\r\n");
 
-    return;
+    return OK;
 }
 
 /**
- * @brief ·µ»Ø ÏÂ±êÎª index µÄÔªËØµÄÖµ
+ * @brief å› ä¸‹æ ‡ä¸º index çš„å…ƒç´ çš„å€¼
+ * 
+ * @param sL 
+ * @param index ä» 0 å¼€å§‹, è¿”å›é“¾è¡¨ä¸­çš„ç¬¬ idx ä¸ªå…ƒç´ (ä¸åŒ…æ‹¬å¤´ç»“ç‚¹)
+ * @param[out] result 
+ * @return Status ERROR/OK
+ */
+Status GetElem_SL(LinkList_SL sL, size_t index, ElemType *result)
+{
+    if(!sL || index >= MAXSIZE_SL || !_linkListManagerSL.initFlag){
+        return ERROR;
+    }
+
+    size_t tempLinkListIdx = sL[_linkListManagerSL.dataLinkListIdx].next;
+    size_t findIdx = 0;
+
+    while(findIdx < index && tempLinkListIdx != 0){
+        ++findIdx;
+        tempLinkListIdx = sL[tempLinkListIdx].next;
+    }
+
+    if(findIdx > index || tempLinkListIdx == 0){
+        return ERROR;
+    }
+
+    *result = sL[tempLinkListIdx].data;
+
+    return OK;
+}
+
+/**
+ * @brief åˆ é™¤ç¬¬ ix ä¸ªèŠ‚ç‚¹
+ *        åˆ é™¤èŠ‚ç‚¹ -> å°† index æ·»åŠ åˆ°å¤‡ç”¨é“¾è¡¨
  *
  * @param[in]  sl
- * @param[in]  index ´Ó 1 ¿ªÊ¼, µÚÒ»¸öÔªËØ¾ÍÊÇ headIndex ¶ÔÓ¦½ÚµãµÄÖµ
- * @param[out] elem ´¢´æ²éÑ¯µ½µÄÖµ
+ * @param[in]  index ä» 0 å¼€å§‹
+ * @param[out] elem ä¿å­˜åˆ é™¤çš„å…ƒç´ çš„å€¼
  * @retval OK/ERROR
  */
-Status LocateElem_SL(SLinkList sl, size_t index, component *elem)
+Status RemoveELem_SL(LinkList_SL sL, size_t index, Node_SL *elem)
 {
-    size_t temp = 1;
-    component head = sl[headIndex];
-
-    while(temp<index && head.cur!=0){
-        ++temp;
-        head = sl[head.cur];
-    }
-    *elem = head;
-
-    if(temp>index || head.cur==0){
+    if(index > MAXSIZE_SL || !sL || !_linkListManagerSL.initFlag){
         return ERROR;
     }
+   
+    size_t tempIdx = 0;
+    size_t tempNodeIdx = sL[_linkListManagerSL.dataLinkListIdx].next; // éå†èŠ‚ç‚¹
+    size_t prevNodeIdx = tempNodeIdx; //è¦åˆ é™¤çš„èŠ‚ç‚¹çš„å‰ä¸€ä¸ªèŠ‚ç‚¹
+
+    while(tempIdx < index && tempNodeIdx != 0){ //éå†æŸ¥æ‰¾è¦åˆ é™¤çš„èŠ‚ç‚¹
+        prevNodeIdx = tempNodeIdx;
+        tempNodeIdx = sL[tempNodeIdx].next; // ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+        ++tempIdx;
+    }
+
+    if(tempIdx > index || tempNodeIdx == 0){ // æ²¡æœ‰æœç´¢åˆ°
+        return ERROR;
+    }
+
+    // åˆ é™¤èŠ‚ç‚¹
+    sL[prevNodeIdx].next = sL[tempNodeIdx].next; // ç´¢å¼•æŒ‡å‘ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+
+    // æ•°æ®æ¸…é›¶
+    elem->data = sL[tempNodeIdx].data;
+    sL[tempNodeIdx].data = 0;     
+
+    //å°†åˆ é™¤çš„èŠ‚ç‚¹ç´¢å¼•ä½¿ç”¨å¤´æ’æ³• æ’å…¥åˆ°å¤‡ç”¨é“¾è¡¨å¤´éƒ¨
+    Free_SL(sL, tempNodeIdx);
 
     return OK;
 }
 
 /**
- * @brief É¾³ıµÚ ix ¸ö½Úµã
- *
- * @param[in]  sl
- * @param[in]  index
- * @param[out] elem ±£´æÉ¾³ıµÄÔªËØµÄÖµ
- * @retval OK/ERROR
+ * @brief åœ¨å¤´éƒ¨æ’å…¥èŠ‚ç‚¹
+ *        ä»å¤‡ç”¨é“¾è¡¨åˆ†é…èŠ‚ç‚¹ -> æ’å…¥æ•°æ®é“¾è¡¨
+ * 
+ * @param sL 
+ * @param insertValue 
+ * @return Status 
  */
-Status RemoveELem_SL(SLinkList sl, size_t index, component *elem)
+Status InsertHead_SL(LinkList_SL sL, ElemType insertValue)
 {
-    if(index>MAXSIZE || !sl){
-        return ERROR;
-    }
-    size_t temp = 1;
-    component head = sl[headIndex];
-    component prev; //ÒªÉ¾³ıµÄ½ÚµãµÄÇ°Ò»¸ö½Úµã
-    size_t prev_temp; //Ç°Ò»¸ö½ÚµãµÄ index
-
-    while(temp<index && head.cur!=0){ //±éÀú²éÕÒÒªÉ¾³ıµÄ½Úµã
-        prev = head;
-        prev_temp = temp;
-        head = sl[head.cur]; // ÏÂÒ»¸ö½Úµã
-        ++temp;
-    }
-
-    if(temp>index || head.cur==0){
+    if(!sL || !_linkListManagerSL.initFlag){
         return ERROR;
     }
 
-    // É¾³ı½Úµã
-    sl[prev_temp].cur = head.cur; // Ë÷ÒıÖ¸ÏòÏÂÒ»¸ö½Úµã
-    sl[temp].data = 0;     //Êı¾İÇåÁã
+    // åˆ†é…èŠ‚ç‚¹
+    size_t insertIdx = Malloc_SL(sL);
+    if(insertIdx <= 0){
+        return ERROR;
+    }
+    sL[insertIdx].data = insertValue;
+    sL[insertIdx].next = sL[_linkListManagerSL.dataLinkListIdx].next;
+    sL[_linkListManagerSL.dataLinkListIdx].next = insertIdx;
 
-    //½«É¾³ıµÄ½ÚµãË÷ÒıÊ¹ÓÃÍ·²å·¨ ²åÈëµ½±¸ÓÃÁ´±íÍ·²¿
-    sl[temp].cur = sl[0].cur;   //sl[0].cur ±¸ÓÃÁ´±íÍ·Ö¸Õë
-    sl[0].cur = temp;
+    return OK;
+
+}
+
+
+/**
+ * @brief å°¾éƒ¨æ’å…¥
+ *        å¤‡ç”¨é“¾è¡¨åˆ†é…èŠ‚ç‚¹ -> æ’å…¥æ•°æ®é“¾è¡¨å°¾éƒ¨
+ * 
+ * @param sl 
+ * @param elem è¦æ’å…¥çš„å€¼
+ * @return Status 
+ */
+Status InsertTail_SL(LinkList_SL sL, ElemType elem)
+{
+    if(!sL || !_linkListManagerSL.initFlag){
+        return ERROR;
+    }
+
+    size_t insertIdx = Malloc_SL(sL);
+    if(insertIdx <= 0){
+        return ERROR;
+    }
+    sL[insertIdx].data = elem;
+    sL[insertIdx].next = 0; // tail ndoe
+
+    size_t tempIdx = sL[_linkListManagerSL.dataLinkListIdx].next, prevIdx = tempIdx;
+
+    while(tempIdx != 0){
+        prevIdx = tempIdx;
+        tempIdx = sL[tempIdx].next;
+    }
+
+    sL[prevIdx].next = insertIdx;
 
     return OK;
 }
 
 /**
- * @brief ²åÈë: ´ÓÍ·½áµã¿ªÊ¼±éÀú, Ò»Ö±µ½×îºóÒ»¸öÔªËØ, È»ºó¿ªÊ¼²åÈë
- *        Ã¿²åÈëÒ»¸öÔªËØ, ±¸ÓÃÁ´±íÀï¾ÍÉÙÒ»¸öÔªËØ, ËùÒÔĞèÒªÓÃ Malloc_SL() Ö±½Ó´Ó±¸ÓÃÁ´±íÀïÄÃ, Ë³±ã¸üĞÂ±¸ÓÃÁ´±í
- *        Òª²»È»Ïàµ±ÓÚÍ¬Ê±²Ù×÷Á½ÌõÁ´±í
- *
- * @param[in]  sl
- * @param[in]  index index ´Ó 1 ¿ªÊ¼, Èç¹ûÔÚÒ»¸ö½ÚµãÇ°²åÈëĞèÒª±£´æ previous node µÄĞÅÏ¢, Èç¹ûÔÚºóÃæÔò²»ÓÃ
- *             »òÕß:
- *             ±éÀúµÄÖÕÖ¹Ìõ¼ş¸ÄÎª´Ó
- * @param[out] elem Òª²åÈëµÄÔªËØÎª component ÀàĞÍ, ÕâÀïÊÇÖµ´«µİ, ¶ø²»ÊÇ´«µİÒıÓÃ
+ * @brief merge two sorted LinkList
+ * 
+ * @param[in]  sL1 
+ * @param[in]  sL2 
+ * @param[out] sL3 result
+ * @return Status 
  */
-Status InsertElem_SL(SLinkList sl, size_t index, component elem)
+Status MergetLinkList_SL(LinkList_SL sL1, LinkList_SL sL2, LinkList_SL sL3)
 {
-    if(index > MAXSIZE){
-        return ERROR;
-    }
-    size_t temp = 1, prev_index = 1;
-    component head = sl[headIndex], prev;
 
-    while(temp<index && head.cur!=0){ // ÕâÀïÓĞÎÊÌâ, Èç¹ûÔÚ×îºóÒ»¸öÔªËØÇ°Ãæ²åÈëÓĞÎÊÌâ£¬ ±ß½çÌõ¼şÃ»ÓĞÈ·¶¨Çå³ı
-        prev_index = temp;
-        prev = head;
-        ++temp;
-        head = sl[head.cur];
-    }
-
-    if(temp>index || head.cur==0){
-        return ERROR;
-    }
-
-    //insert
-    size_t insert_pos = Malloc_SL(sl); //·ÖÅäÒ»¸öÄÚ´æ
-    sl[insert_pos] = elem; //¶ÔÔªËØ¸³Öµ
-    sl[insert_pos].cur = head.cur; // ÏÈÈ·¶¨ºóÃæ
-    sl[prev_index].cur = insert_pos; // ÔÙÈ·¶¨Ç°Ãæ
-
-    return OK;
 }
 
-/********************************************* P33 ÀıÌâ1 *******************************************************/
+/********************************************* P33 ä¾‹é¢˜1 *******************************************************/
 /**
- * @brief test ¼ÆËã: (A-B)U(B-A),  A B ¶¼ÎªÁ´±í
+ * @brief test è®¡ç®—: (A-B)U(B-A),  A B éƒ½ä¸ºé“¾è¡¨
  *
  */
-void difference(SLinkList space , int index)
+void difference(LinkList_SL space , int index)
 {
 
 }
 
-//²âÊÔº¯Êı
+//æµ‹è¯•å‡½æ•°
 void test_SL()
 {
-    SLinkList sl;
-    component temp;
+    LinkList_SL sL; // array
+    Node_SL temp;
+    ElemType data;
+    size_t idx = 1;
 
-    InitSpace_SL(sl);
-    InitLinkList_SL(sl, 5);
-    Traverse_SL(sl);
+    printf("array address:%#p\r\n", &sL);
+    InitSpace_SL_v2(sL);
+    Traverse_SL(sL);
 
-    printf("\n");
-    LocateElem_SL(sl, 2, &temp);
-    Traverse_SL(sl);
-    printf("locate data:%d, cursor:%d\n", temp.data, temp.cur);
-    printf("\n");
+    data = 100;
+    InsertHead_SL(sL, data);
+    printf("head insert:%d\r\n", data);
+    Traverse_SL(sL);
 
-    RemoveELem_SL(sl, 3, &temp);
-    Traverse_SL(sl);
-    printf("removed data:%d, cursor:%d\n", temp.data, temp.cur);
-    printf("\n");
+    data = 123;
+    InsertTail_SL(sL, data);
+    printf("tail insert:%d\r\n", data);
+    Traverse_SL(sL);
 
-    temp.data = 100;
-    InsertElem_SL(sl, 3, temp);
-    Traverse_SL(sl);
-    printf("insert data:%d\n", temp.data);
-    printf("\n");
+    data = 45;
+    InsertHead_SL(sL, data);
+    printf("head insert:%d\r\n", data);
+    Traverse_SL(sL);
+
+    RemoveELem_SL(sL, idx, &temp);
+    printf("remove index:%d, value:%d\r\n", idx, temp.data);
+    Traverse_SL(sL);
+
+    GetElem_SL(sL, idx, &temp);
+    printf("get elem index:%d, value:%d\r\n", idx, temp.data);
+    Traverse_SL(sL);
 
     return;
 }
 
-#endif // STATIC_LINK_LIST
+void SL_test2()
+{
+    LinkList_SL sL; // array
+    LinkList_SL sL2;
+    ElemType arr[] = {1, 22, 444, 55555};
+
+    InitSpace_SL_v2(sL); // &sL;
+    Traverse_SL(sL);
+
+    InitLinkListWithRandom_SL(sL, 10);
+    printf("init with random:\r\n");
+    Traverse_SL(sL);
+
+    printf("=================\r\n");
+    InitSpace_SL_v2(sL2); // &sL;
+    Traverse_SL(sL2);
+
+    printf("init with array:\r\n");
+    InitLinkListWithArray_SL(sL2, arr, sizeof(arr)/sizeof(ElemType));
+    Traverse_SL(sL2);
+}
+
+

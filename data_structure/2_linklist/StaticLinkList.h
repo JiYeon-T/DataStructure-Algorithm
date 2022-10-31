@@ -1,32 +1,30 @@
 #ifndef __STATIC_LINK_LIST_H__
 #define __STATIC_LINK_LIST_H__
 
-#if STATIC_LINK_LIST
-
-#include "LinkList.h"
+// #if STATIC_LINK_LIST
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define MAXSIZE     100
+#include "LinkList.h"
+
+
+#define MAXSIZE_SL          100
 
 typedef struct
 {
-    ElemType data;      // Êı¾İÓò
-    unsigned int cur;   // Æğµ½Ö¸ÕëµÄ×÷ÓÃ, Ö¸ÏòÁ´±íÏÂÒ»¸ö½ÚµãµÄË÷Òı(Êı×éÏÂ±ê)
-} component, SLinkList[MAXSIZE]; // ½á¹¹ÌåÊı×é
+    ElemType data;      // æ•°æ®åŸŸ
+    size_t next;   // æŒ‡é’ˆåŸŸ:é€šè¿‡æ•°ç»„ä¸‹æ ‡(ç´¢å¼•/cursor), èµ·åˆ°æŒ‡é’ˆçš„ä½œç”¨, æŒ‡å‘é“¾è¡¨ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+} Node_SL, LinkList_SL[MAXSIZE_SL]; // ç»“æ„ä½“æ•°ç»„
+// typedef component[MAXSIZE] SLinkList;
+// SLinkList sl; // ç›¸å½“äº component sl[10];
 
-//typedef component[MAXSIZE] SLinkList;
-//SLinkList sl; // Ïàµ±ÓÚ component sl[10];
 
-void InitSpace_SL();
-Status InitLinkList_SL(SLinkList sl, size_t size);
-void Traverse_SL(SLinkList sl);
-Status LocateElem_SL(SLinkList sl, size_t index, component *elem);
-Status RemoveELem_SL(SLinkList sl, size_t index, component *elem);
-Status InsertElem_SL(SLinkList sl, size_t index, component elem);
+
+
 
 void test_SL();
+void SL_test2();
 
-#endif // STATIC_LINK_LIST
+// #endif // STATIC_LINK_LIST
 #endif

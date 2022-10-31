@@ -1,0 +1,6 @@
+#ifndef DISTRIBUTE_LIST_H_INCLUDED
+#define DISTRIBUTE_LIST_H_INCLUDED
+
+// 进阶 -> 分布式消息队列 - broker
+
+#endif // DISTRIBUTE_LIST_H_INCLUDED

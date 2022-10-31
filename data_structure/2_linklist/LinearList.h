@@ -1,18 +1,17 @@
 #ifndef LINEARLIST_H_INCLUDED
 #define LINEARLIST_H_INCLUDED
 
-#include "head.h"
-
+#include "config.h"
 //#define LINEAR_LIST     1
-#if LINEAR_LIST
+// #if LINEAR_LIST
 
 #include <stdio.h>
 #include <stdbool.h>
 
-// ÏßÐÔ±íµÄË³Ðò´æ´¢·½Ê½, Ë³Ðò´æ´¢µÄÏßÐÔ±í(Ë³Ðò±í)
-// ÊµÏÖ·½·¨:
-// (1) Êý×é(µØÖ·Á¬Ðø);
-// (2) ¶¯Ì¬·ÖÅäÄÚ´æ, malloc(), µØÖ·Ò²ÊÇÁ¬ÐøµÄ0  ;
+// ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½Ë³ï¿½ï¿½æ´¢ï¿½ï¿½Ê½, Ë³ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½(Ë³ï¿½ï¿½ï¿½)
+// Êµï¿½Ö·ï¿½ï¿½ï¿½:
+// (1) ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½);
+// (2) ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½, malloc(), ï¿½ï¿½Ö·Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0  ;
 
 
 typedef int Status;
@@ -24,13 +23,13 @@ typedef int ElemType;
 typedef struct{
 //    ElemType elem[ElemSize];
     ElemType *elem;
-    // Ò²¿ÉÒÔÊ¹ÓÃ¶ÑÄÚ´æ, Ò²ÊÇÁ¬ÐøµÄ: ElemType *elem;
-    int curLength; // µ±Ç°Ê¹ÓÃ³¤¶È
-    int listSize; // µ±Ç°·ÖÅäµÄ×Ü´óÐ¡, µ¥Î»:sizeof(ElemType)
+    // Ò²ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¶ï¿½ï¿½Ú´ï¿½, Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ElemType *elem;
+    int curLength; // ï¿½ï¿½Ç°Ê¹ï¿½Ã³ï¿½ï¿½ï¿½
+    int listSize; // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½Ð¡, ï¿½ï¿½Î»:sizeof(ElemType)
 } LList;
 
-// ¶¨ÒåÒ»¸öº¯ÊýÖ¸Õë, ÓÃÀ´¶¨Î»ÔªËØ
-// Ä³Á½¸öÔªËØ, Âú×ãÄ³Ò»ÖÖ¹ØÏµµÄÎ»ÖÃ
+// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»Ôªï¿½ï¿½
+// Ä³ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä³Ò»ï¿½Ö¹ï¿½Ïµï¿½ï¿½Î»ï¿½ï¿½
 typedef bool (*pCompare)(ElemType a, ElemType b);
 
 Status InitList_L(LList *L);
@@ -38,7 +37,7 @@ Status DestroyList_L(LList *L);
 Status CLearList_L(LList *L);
 bool ListIsEmpty_L(const LList *L);
 size_t ListLength_L(const LList *L);
-Status GetElem_L(const LList *L, size_t idx, ElemType *val);
+Status GetElem_LL(const LList *L, size_t idx, ElemType *val);
 Status SetElem_L(LList *L, size_t idx, ElemType val);
 size_t LocateElem_L(const LList *L, ElemType e, pCompare fun);
 Status PriorElem_L(const LList *L, ElemType cur, ElemType *prior);
@@ -53,6 +52,6 @@ void MergeList_L(const LList *L1, const LList *L2);
 
 void ListTest_L();
 
-#endif //LINEAR_LIST
+// #endif //LINEAR_LIST
 
 #endif // LINEARLIST_H_INCLUDED

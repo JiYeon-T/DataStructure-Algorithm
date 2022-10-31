@@ -1,9 +1,20 @@
+/**
+ * @file CircleLinkList.h
+ * @author your name (you@domain.com)
+ * @brief 循环链表
+ * @version 0.1
+ * @date 2022-10-31
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #ifndef __CIRCLE_LINK_LIST_H__
 #define __CIRCLE_LINK_LIST_H__
 
-#if CIRCLE_LINK_LIST
-
+#include "config.h"
 #include "LinkList.h"
+
+
 typedef struct
 {
     ElemType data;
@@ -11,15 +22,8 @@ typedef struct
 } Node_CL, *LinkList_CL;
 //typedef struct Node* CLinkList;
 
-LinkList_CL Init_CL(size_t size);
-Status Traverse_CL(LinkList_CL CL);
-Status GetElem_CL(LinkList_CL CL, size_t index, ElemType *data);
-Status Delete_CL(LinkList_CL head, ElemType nodeVal);
-Status Insert_CL(LinkList_CL head, ElemType nodeVal, ElemType insertVal);
-Status Deinit_CL(LinkList_CL head);
 
-void Test_CL();
-
-#endif // CIRCLE_LINK_LIST
+void Test_CL(void);
+void Test2_CL(void);
 
 #endif

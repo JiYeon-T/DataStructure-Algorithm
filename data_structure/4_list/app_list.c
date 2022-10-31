@@ -1,26 +1,29 @@
 #include "app_list.h"
-//#inlcude <stdint.h>
-//#include <stdbool.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include "list.h"
 
-#if 0
+
+
 // define
 #define MUSIC_DATA_BLOCK_LEN        900
 #define MUSIC_DATA_BLOCK_NUM        40
 
 typedef struct
 {
-    bt_node_t block_node;
-    uin32_t data_len;
+    node_t block_node;
+    uint32_t data_len;
     uint8_t data_buf[MUSIC_DATA_BLOCK_LEN];
-} data_block_t; // Êı¾İ¿é
+} data_block_t; // æ•°æ®å—
 
 typedef struct
 {
-    bt_list_t data_list;
-    bt_list_t free_list;
+    list_t data_list;
+    list_t free_list;
     int curr_fp;
     char file_name[50];
-    data_block_t *curr_block;   // ¶¯Ì¬·ÖÅäÄÚ´æ
+    data_block_t *curr_block;   // åŠ¨æ€åˆ†é…å†…å­˜
     uint32_t send_len;
     BT_MUSIC_STATE_E state;
 } music_dev_t; // music device
@@ -29,40 +32,72 @@ typedef struct
 static music_dev_t _g_music_dev;
 static bool _g_loop_mode = false;
 
-// init
-bool music_init()
+/**
+ *@fun:
+ *@desc:
+ */
+bool music_cache_init()
 {
     data_block_t *block = NULL;
-    bt_node_t *node = NULL;
+    node_t *node = NULL;
 
-    bt_list_init(&music_dev.data_list);
-    bt_list_init(&music_dev.free_list);
+    list_init(&_g_music_dev.data_list);
+    list_init(&_g_music_dev.free_list);
 
-    // ÉêÇëÒôÆµ»º³åÇø free_list
+    // ç”³è¯·éŸ³é¢‘ç¼“å†²åŒº free_list
     for(int ix = 0; ix < MUSIC_DATA_BLOCK_NUM; ++ix){
         block = (data_block_t*)malloc(sizeof(data_block_t));
-        if(!block){ // ÉêÇëÄÚ´æÊ§°Ü
+        if(!block){ // ç”³è¯·å†…å­˜å¤±è´¥
             printf("malloc failed.\r\n");
-            // ÊÍ·ÅÒÑ¾­ÉêÇëµÄÄÚ´æ
-            node = bt_list_remove_first(&_g_music_dev.free_list);
+            // é‡Šæ”¾å·²ç»ç”³è¯·çš„å†…å­˜
+            node = list_remove_first(&_g_music_dev.free_list);
             while(node != NULL){
                 block = bt_list_container_of(node, data_block_t, block_node);
-                // ½â¾öºêÎÊÌâµÄ×îºÃ°æ°ì·¨¾ÍÊÇ°ÑËûÃÇ¶¼Ğ´³öÀ´£¬²ğ¿ª
+                // è§£å†³å®é—®é¢˜çš„æœ€å¥½ç‰ˆåŠæ³•å°±æ˜¯æŠŠä»–ä»¬éƒ½å†™å‡ºæ¥ï¼Œæ‹†å¼€
                 //#define bt_list_container_of(node, type, member) (type*)((uint32_t)node - (uint32_t)&((type*)0)->member)
                 // (type*)((uint32_t)node - (uint32_t)&((type*)0)->member)
                 // (data_block_t*)((uint32_t)(node) - (uint32_t)&((data_block_t*)0)->block_node)
                 if(block != NULL){
                     free(block);
                 }
-                node = bt_list_remove_first(&_g_music_dev.free_list);
+                node = list_remove_first(&_g_music_dev.free_list);
             }
             return false;
         }
-        // ÄÚ´æ·ÖÅä³É¹¦
-        memset(block, 0, sizeof(block)); // sizeof(data_block_t) ¿ÉÄÜ²»µÈÓÚ sizeof(block)
-        bt_list_add_last(&_g_music_dev.free_list, &block->block_node);
+        // å†…å­˜åˆ†é…æˆåŠŸ
+        memset(block, 0, sizeof(block)); // sizeof(data_block_t) å¯èƒ½ä¸ç­‰äº sizeof(block)
+        list_add_last(&_g_music_dev.free_list, &block->block_node);
     }
 
 }
 
-#endif
+/**
+ * @fun:
+ * @desc:
+*/
+bool music_cache_deinit()
+{
+
+}
+
+/**
+ * @fun:
+ * @desc:
+*/
+bool music_play()
+{
+
+}
+
+bool music_stop()
+{
+
+
+}
+
+
+void list_test()
+{
+    printf("%s\r\n", __func__);
+    list_test_raw();
+}

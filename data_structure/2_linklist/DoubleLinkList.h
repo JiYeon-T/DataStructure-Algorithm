@@ -1,7 +1,8 @@
 #ifndef __DOUBLE_LINK_LIST_H__
 #define __DOUBLE_LINK_LIST_H__
 
-#if DOUBLE_LINK_LIST
+#include "config.h"
+// #if DOUBLE_LINK_LIST
 
 #include "LinkList.h"
 
@@ -19,6 +20,6 @@ Status GetElem_D(LinkList_D *DL, size_t index);
 
 
 void DoubleListTest();
-#endif //DOUBLE_LINK_LIST
+// #endif //DOUBLE_LINK_LIST
 
 #endif

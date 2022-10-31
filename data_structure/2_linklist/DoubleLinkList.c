@@ -1,7 +1,7 @@
 /**
  * @file DoubleLinkList.c
  * @author your name (you@domain.com)
- * @brief Ë«ÏòÁ´±í
+ * @brief åŒå‘é“¾è¡¨
  * @version 0.1
  * @date 2022-03-26
  *

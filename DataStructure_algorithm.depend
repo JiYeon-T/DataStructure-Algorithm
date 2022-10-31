@@ -1,90 +1,130 @@
 # depslib dependency file v1.0
-1661357996 source:d:\files\gitfile\datastructure-algorithm\algorithm\1_crc\crc_c.c
+1661687356 source:d:\files\gitfile\datastructure-algorithm\algorithm\1_crc\crc_c.c
 	<stdio.h>
 	<stdlib.h>
 
-1661357837 source:d:\files\gitfile\datastructure-algorithm\data_structure\1_adt\triplet.c
+1661687356 source:d:\files\gitfile\datastructure-algorithm\data_structure\1_adt\triplet.c
 	"Triplet.h"
 	<stdlib.h>
 	<stdio.h>
 
-1661357670 d:\files\gitfile\datastructure-algorithm\data_structure\1_adt\triplet.h
+1661687356 d:\files\gitfile\datastructure-algorithm\data_structure\1_adt\triplet.h
 
 1639006822 source:d:\files\gitfile\datastructure-algorithm\data_structure\1_adt\triplettest.c
 
-1661300615 source:d:\files\gitfile\datastructure-algorithm\data_structure\1_ring_buffer\ringbuffer.c
+1661687560 source:d:\files\gitfile\datastructure-algorithm\data_structure\1_ring_buffer\ringbuffer.c
 	"ringbuffer.h"
 	<stdio.h>
 	<stdlib.h>
 	"ringbuffer.h"
 	<stddef.h>
 
-1649469110 d:\files\gitfile\datastructure-algorithm\data_structure\1_ring_buffer\ringbuffer.h
+1661687560 d:\files\gitfile\datastructure-algorithm\data_structure\1_ring_buffer\ringbuffer.h
 	<stdint.h>
 	<assert.h>
 	<stdio.h>
 
-1661439110 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\circlelinklist.c
+1667231607 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\circlelinklist.c
 	"CircleLinkList.h"
+	<stdlib.h>
+	<time.h>
+	<limits.h>
 
-1661439069 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\circlelinklist.h
+1667227038 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\circlelinklist.h
+	"config.h"
 	"LinkList.h"
 
-1661685049 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linklist.h
-	"head.h"
+1667115336 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linklist.h
+	"config.h"
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
 
-1661439116 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\doublelinklist.c
+1667033505 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\doublelinklist.c
 	"DoubleLinkList.h"
 
-1661439074 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\doublelinklist.h
+1667110870 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\doublelinklist.h
+	"config.h"
 	"LinkList.h"
 
-1661685409 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linklist.c
+1667130403 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linklist.c
 	"LinkList.h"
+	<limits.h>
 
-1661439134 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\staticlinklist.c
+1667131854 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\staticlinklist.c
 	"StaticLinkList.h"
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<limits.h>
+	<stdbool.h>
 
-1661680863 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\staticlinklist.h
-	"LinkList.h"
+1667130957 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\staticlinklist.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
+	"LinkList.h"
 
-1661300408 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\service_bt_list.c
+1666788913 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\service_bt_list.c
 	"service_bt_list.h"
 
-1653990590 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\service_bt_list.h
+1666788934 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\service_bt_list.h
+	"list.h"
 	<stdint.h>
 	<stdlib.h>
 
-1661300538 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\app_list.c
+1667033450 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\app_list.c
 	"app_list.h"
+	<stdint.h>
+	<stdbool.h>
+	<stdio.h>
+	"list.h"
 
-1653988989 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\app_list.h
-	"service_bt_list.h"
+1667033453 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\app_list.h
+	"list.h"
 
-1661682387 source:d:\files\gitfile\datastructure-algorithm\main.c
+1667227976 source:d:\files\gitfile\datastructure-algorithm\main.c
 	<stdio.h>
 	<stdlib.h>
 	"head.h"
+	"config.h"
 
-1661679860 d:\files\gitfile\datastructure-algorithm\head.h
+1667226992 d:\files\gitfile\datastructure-algorithm\head.h
 	"Triplet.h"
 	"LinearList.h"
+	"app_list.h"
+	"StaticLinkList.h"
+	"CircleLinkList.h"
 
-1661679620 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linearlist.h
-	"head.h"
+1667111025 d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linearlist.h
+	"config.h"
 	<stdio.h>
 	<stdbool.h>
 
-1661679579 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linearlist.c
+1667111058 source:d:\files\gitfile\datastructure-algorithm\data_structure\2_linklist\linearlist.c
 	"LinearList.h"
 	<stdio.h>
 	<errno.h>
 	<stdlib.h>
 	<stdint.h>
+
+1667033440 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\list.h
+	<stdint.h>
+
+1666803346 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\list.c
+	"list.h"
+	"string.h"
+	"stdlib.h"
+
+1666803226 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\distribute_list.c
+	"distribute_list.h"
+
+1667033459 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\distribute_list.h
+
+1666802979 source:d:\files\gitfile\datastructure-algorithm\data_structure\4_list\thread_safety_list.c
+	"thread_safety_list.h"
+
+1667033446 d:\files\gitfile\datastructure-algorithm\data_structure\4_list\thread_safety_list.h
+
+1667230009 d:\files\gitfile\datastructure-algorithm\config.h
 

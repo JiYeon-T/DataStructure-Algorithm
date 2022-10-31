@@ -25,7 +25,7 @@ Status InitList_L(LList *L)
         fprintf(stderr, "null ptr\n");
         return ERROR;
     }
-    /** Ö¸ÕëµÄÖµÊµ¼ÊÉÏ±£´æµÄ¾ÍÊÇ´«ÈëµÄ±äÁ¿µÄµØÖ· **/
+    /** æŒ‡é’ˆçš„å€¼å®é™…ä¸Šä¿å­˜çš„å°±æ˜¯ä¼ å…¥çš„å˜é‡çš„åœ°å€ **/
 //    printf("address:%#p, pointer's address(local variable address):%#p\n", L, &L);
     L->elem = (ElemType*)malloc(sizeof(ElemType) * DEFAULT_LIST_SIZE);
 //    (*L).elem = (ElemType*)malloc(sizeof(ElemType) * DEFAULT_LIST_SIZE);
@@ -109,7 +109,7 @@ size_t ListLength_L(const LList *L)
 * @desc: get the element number, idx from 0 to (N-1), N = ElemNum
 * @param: L
 */
-Status GetElem_L(const LList *L, size_t idx, ElemType *val)
+Status GetElem_LL(const LList *L, size_t idx, ElemType *val)
 {
     if(!L){
         fprintf(stderr, "null ptr\n");
@@ -120,8 +120,8 @@ Status GetElem_L(const LList *L, size_t idx, ElemType *val)
         return ERROR;
     }
 
-    // L->elem[idx] ÊÇ ElemType ÀàĞÍ, Ïàµ±ÓÚ½âÒıÓÃ
-    // *val Ò²ÊÇ½âÒıÓÃ
+    // L->elem[idx] æ˜¯ ElemType ç±»å‹, ç›¸å½“äºè§£å¼•ç”¨
+    // *val ä¹Ÿæ˜¯è§£å¼•ç”¨
     *val = L->elem[idx];
 
     return OK;
@@ -145,15 +145,15 @@ Status SetElem_L(LList *L, size_t idx, ElemType val)
 }
 
 /**
-* @fun:  ÄÜ·ñ¶¨Î»µ½Õâ¸öÔªËØ
+* @fun:  èƒ½å¦å®šä½åˆ°è¿™ä¸ªå…ƒç´ 
 * @desc: get the element number, idx from 0 to (N-1), N = ElemNum
 * @param: L
-* @ret: index, ÏÂ±ê; UINT32_MAX - not found
+* @ret: index, ä¸‹æ ‡; UINT32_MAX - not found
 */
 static bool equal(ElemType a, ElemType b)
 {
-    // ÕâÀïµÄ ElemType ÊÇ int ÀàĞÍ, ËùÒÔ¿ÉÒÔÖ±½ÓÓÃ == ÔËËã·û
-    // Èç¹ûÊÇÒ»¸ö½á¹¹Ìå(»òÕßÀà)Ôò»¹ĞèÒªÖØÔØ ==
+    // è¿™é‡Œçš„ ElemType æ˜¯ int ç±»å‹, æ‰€ä»¥å¯ä»¥ç›´æ¥ç”¨ == è¿ç®—ç¬¦
+    // å¦‚æœæ˜¯ä¸€ä¸ªç»“æ„ä½“(æˆ–è€…ç±»)åˆ™è¿˜éœ€è¦é‡è½½ ==
     return a == b;
 }
 size_t LocateElem_L(const LList *L, ElemType e, pCompare fun)
@@ -186,7 +186,7 @@ Status PriorElem_L(const LList *L, ElemType elem, ElemType *prior)
         fprintf(stderr, "null ptr\n");
         return ERROR;
     }
-    // Ë³Ğò±í, ËùÒÔ²»ĞèÒª¼ÇÂ¼µ±Ç°Î»ÖÃ, Ö»ĞèÒª·µ»Ø elem[idx-1] µÄÔªËØ¼´¿É
+    // é¡ºåºè¡¨, æ‰€ä»¥ä¸éœ€è¦è®°å½•å½“å‰ä½ç½®, åªéœ€è¦è¿”å› elem[idx-1] çš„å…ƒç´ å³å¯
     for(int ix = 0; ix < L->curLength; ++ix){
         if(L->elem[ix] == elem){
             if(ix == 0){
@@ -228,12 +228,12 @@ Status NextElem_L(const LList *L, ElemType elem, ElemType *next)
 }
 
 /**
-* @fun:  ²åÈë
-* @desc: ÊÇ·ñĞèÒª×öÀàËÆÓÚ C++ ÀïÃæµÄÀ©Èİ²Ù×÷?
-*         ÔİÊ±ÏÈ²»À©Èİ, Èç¹û´óÓÚ×Ü´óĞ¡, ¾Í ERROR
-*         Èç¹ûÒªÀ©ÈİµÄ»°, Ò²²»¿ÉÒÔÎŞÏŞÀ©Èİ
+* @fun:  æ’å…¥
+* @desc: æ˜¯å¦éœ€è¦åšç±»ä¼¼äº C++ é‡Œé¢çš„æ‰©å®¹æ“ä½œ?
+*         æš‚æ—¶å…ˆä¸æ‰©å®¹, å¦‚æœå¤§äºæ€»å¤§å°, å°± ERROR
+*         å¦‚æœè¦æ‰©å®¹çš„è¯, ä¹Ÿä¸å¯ä»¥æ— é™æ‰©å®¹
 * @param: L
-* @param: idx Òª²åÈëµÄÏÂ±ê
+* @param: idx è¦æ’å…¥çš„ä¸‹æ ‡
 * @ret: Status
 */
 Status ListInsert_L(LList *L, size_t idx, ElemType val)
@@ -266,7 +266,7 @@ Status ListDelete_L(LList *L, size_t idx, ElemType *val)
         return ERROR;
     }
 
-    // Ö±½ÓÇ°ÒÆ, ¸²¸Ç
+    // ç›´æ¥å‰ç§», è¦†ç›–
     *val = L->elem[idx];
     for(int ix = idx; ix < L->curLength - 1; ++ix){
         L->elem[ix] = L->elem[ix + 1];
@@ -302,7 +302,7 @@ Status ListTraverse_L(const LList *L)
 
 /**
 * @fun:  bubble sort
-* @desc: O(n^2), ´ÓĞ¡µ½´ó
+* @desc: O(n^2), ä»å°åˆ°å¤§
 * @param: L
 * @param: idx index
 * @ret:
@@ -327,7 +327,7 @@ Status ListSort_L(LList *L)
 
 /**
 * @fun:  A = A U B
-* @desc: ±éÀú B ÖĞµÄÃ¿Ò»¸öÔªËØ, ÅĞ¶ÏÊÇ·ñÔÚ A ÖĞ, Èç¹ûÔÚ, ÔòÌø¹ı; ²»ÔÚ, ²åÈë A µÄÄ©Î²
+* @desc: éå† B ä¸­çš„æ¯ä¸€ä¸ªå…ƒç´ , åˆ¤æ–­æ˜¯å¦åœ¨ A ä¸­, å¦‚æœåœ¨, åˆ™è·³è¿‡; ä¸åœ¨, æ’å…¥ A çš„æœ«å°¾
 * @param: L
 * @param: idx index
 * @ret:
@@ -342,7 +342,7 @@ Status UnionList_L(const LList *L1, const LList *L2)
     size_t len2 = L2->curLength;
 
     for(int ix = 0; ix <len2; ++ix){
-        // ²»ÔÚ L1 ÖĞ
+        // ä¸åœ¨ L1 ä¸­
         if(LocateElem_L(L1, L2->elem[ix], equal) == UINT32_MAX){
             SetElem_L(L1, L1->curLength, L2->elem[ix]);
         }
@@ -352,7 +352,7 @@ Status UnionList_L(const LList *L1, const LList *L2)
 
 
 /**
-* @fun:  ¹é²¢ÅÅĞòÀïµÄ×îºóÒ»²½
+* @fun:  å½’å¹¶æ’åºé‡Œçš„æœ€åä¸€æ­¥
 * @desc:
 * @param: L
 * @param: idx index

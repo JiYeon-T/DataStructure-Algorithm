@@ -31,6 +31,14 @@ int main()
     Test2_CL();
 #endif
 
+#if DOUBLE_LINK_LIST
+#if WITHOUT_TAIL_POINTER
+    DoubleListTest();
+#else // WITHOUT_TAIL_POINTER
+    DoubleListTest_v2();
+#endif // WITHOUT_TAIL_POINTER
+#endif // DOUBLE_LINK_LIST
+
 
 
     return 0;

@@ -7,7 +7,8 @@
 #include "app_list.h"
 #include "StaticLinkList.h"
 #include "CircleLinkList.h"
-
+#include "DoubleLinkList.h"
+#include "DoubleCircleLinkList.h"
 
 
 

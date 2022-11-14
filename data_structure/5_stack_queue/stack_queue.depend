@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1668443417 source:d:\files\gitfile\datastructure-algorithm\data_structure\5_stack_queue\main.c
+	<stdio.h>
+	<stdlib.h>
+	"stack_v1.h"
+
+1668444669 d:\files\gitfile\datastructure-algorithm\data_structure\5_stack_queue\stack_v1.h
+
+1668446316 source:d:\files\gitfile\datastructure-algorithm\data_structure\5_stack_queue\stack_v1.c
+	"stack_v1.h"
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+

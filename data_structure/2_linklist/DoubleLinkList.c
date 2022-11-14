@@ -300,7 +300,9 @@ void DoubleListTest()
 /*********************************** 2.包含尾指针 ********************************************/
 /**
  * @brief initialize
-
+ *        (1) 头结点的 prev = NULL, 尾节点的 next = NULL;
+ *        (2) 链表保存头结点和尾节点;
+ * 
  * @param dl
  * @return Status
  */
@@ -332,7 +334,15 @@ Status InitLinkList_DL(LinkList_DL_v2 *dl)
  */
 Status InitLinkListWithArray_DL(LinkList_DL_v2 *dl, ElemType *arr, size_t len)
 {
+    if(!dl || !arr || len < 0){
+        return ERROR;
+    }
 
+    for(size_t ix = 0; ix < len; ++ix){
+        InsertTail_DL(dl, arr[ix]);
+    }
+
+    return OK;
 }
 
 /**
@@ -447,7 +457,28 @@ Status InsertBefore_DL(LinkList_DL_v2 *dl, size_t idx, ElemType data)
  */
 Status RemoveElem_DL(LinkList_DL_v2 *dl, size_t idx, ElemType *data)
 {
+    if(!dl || idx>dl->len ||!data){
+        return ERROR;
+    }
 
+    Node_DL *temp = NULL;
+    if(GetNode_DL(dl, idx, &temp) != OK){
+        return ERROR;
+    }
+
+    // 为什么会报错??????????????????????????????????????
+    // temp->prev->next = temp->next;
+    // temp->next->prev = temp->prev;
+    Node_DL *prev = temp->prev;
+    Node_DL *next = temp->next;
+    prev->next = temp->next;
+    next->prev = temp->prev;
+
+    *data = temp->data;
+
+    --dl->len;
+
+    return OK;
 }
 
 /**
@@ -631,14 +662,56 @@ Status TraverseNext_DL(const LinkList_DL_v2 *dl)
     return OK;
 }
 
+/**
+ * @brief clear linklist, save head node
+ * 
+ * @param dl 
+ * @return Status 
+ */
 Status Clear_DL(LinkList_DL_v2 *dl)
 {
+    if(!dl){
+        return ERROR;
+    }
 
+    Node_DL *temp = dl->pHead->next;
+
+    while(temp != NULL){
+        Node_DL *pFree = temp;
+        temp = temp->next;
+        free(pFree);
+    }
+
+    dl->pTail = dl->pHead; // tail pointer
+    dl->pHead->next = NULL; // 头结点的后继节点为 NULL
+    dl->len = 0;
+
+    return OK;
 }
 
-Status Deinit_DL(LinkList_DL_v2 dl)
+/**
+ * @brief Clear linklist and remove head node
+ * 
+ * @param dl 
+ * @return Status 
+ */
+Status Deinit_DL(LinkList_DL_v2 *dl)
 {
+    if(!dl){
+        return ERROR;
+    }
+    
+    if(Clear_DL(dl) != OK){
+        return ERROR;
+    }
 
+    free(dl->pHead);
+
+    dl->pHead = NULL;
+    dl->pTail = NULL;
+    dl->len = 0;
+
+    return OK;
 }
 
 void DoubleListTest_v2()
@@ -714,6 +787,34 @@ void DoubleListTest_v2()
     printf("get prior elem idx:%d value:%d\r\n", idx, prevElem->data);
     TraverseNext_DL(&dl);
     TraversePrior_DL(&dl);
+
+    idx = 1;
+    RemoveElem_DL(&dl, idx, &data);
+    printf("remove idx:%d val:%d\r\n", idx, data);
+    TraverseNext_DL(&dl);
+    TraversePrior_DL(&dl);
+
+    Clear_DL(&dl);
+    printf("clear double linklist:\r\n");
+    TraverseNext_DL(&dl);
+    TraversePrior_DL(&dl);
+
+    Deinit_DL(&dl);
+    printf("deinit double linklist:\r\n");
+    // TraverseNext_DL(&dl);
+    // TraversePrior_DL(&dl);
 }
+
+void DoubleLinkListTest3()
+{
+    LinkList_DL_v2 dl;
+    ElemType arr[] = {1, 333, 444, 22243, 2134556};
+    InitLinkList_DL(&dl);
+    InitLinkListWithArray_DL(&dl, arr, sizeof(arr) / sizeof(ElemType));
+    TraverseNext_DL(&dl);
+    TraversePrior_DL(&dl);
+}
+
+
 
 #endif

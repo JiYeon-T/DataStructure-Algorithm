@@ -36,9 +36,16 @@ int main()
     DoubleListTest();
 #else // WITHOUT_TAIL_POINTER
     DoubleListTest_v2();
+    // DoubleLinkListTest3();
 #endif // WITHOUT_TAIL_POINTER
 #endif // DOUBLE_LINK_LIST
 
+#if DOUBLE_CIRCLE_LINKLIST
+    test_DCL();
+#endif
+
+#if APP_LINKLIST
+#endif
 
 
     return 0;

@@ -8,40 +8,33 @@
  * @copyright Copyright (c) 2022
  *
  */
-#include "./DoubleLinkList.h"
-#include <stdlib.h>
-#include <limits.h>
-#include <stdint.h>
+#include "DoubleLinkList.h"
 
 
-// 不保存尾指针的双向链表的操作与单向链表相比没有什么优势, 且写法差别不大, 还是需要保存尾指针
-// typedef struct
-// {
-//     LinkList_DL head, tail;
-//     size_t size;
-// } LinkList_DL_v2;
+#if defined(DataStructDoubleLinkListV1) && (DataStructDoubleLinkListV1 == 1)
 
-#if WITHOUT_TAIL_POINTER
+
 /**
  * @brief initialize
  *        (1) 头结点的 prev = NULL, next = NULL;
  *        (2) 仅仅从 prev 方向或者 next 方向来看是一个单向链表;
  *        (3) 包含头结点, 头结点不保存数据;
+ *
  * @param dl
  * @return Status
  */
 Status InitLinkList_DL(LinkList_DL *dl)
 {
-    if(!dl){
+    if (!dl) {
         return ERROR;
     }
 
     Node_DL *head = (Node_DL*)malloc(sizeof(Node_DL) * 1);
-    if(!head){
+    if (!head) {
         printf("memory allocate failed\r\n");
         return ERROR;
     }
-    head->data = INT_MAX;
+    head->data = INVALID_VAL;
     head->prev = NULL;
     head->next = NULL;
 
@@ -58,14 +51,34 @@ Status InitLinkList_DL(LinkList_DL *dl)
  * @param len
  * @return Status
  */
-Status InitLinkListWithArray_DL(LinkList_DL *dl, ElemType *arr, size_t len)
+Status InitLinkListWithArray_DL(LinkList_DL *dl, ElemType *pArr, size_t len)
 {
-    if(InitLinkList_DL(dl) != OK || !arr || len < 0){
+    if(InitLinkList_DL(dl) != OK || !pArr || len < 0){
         return ERROR;
     }
 
+    Node_DL *pFirst;
+    Node_DL *pTail;
     for(size_t ix = 0; ix < len; ++ix){
-        // head/tail insert
+        pFirst = (*dl)->next;
+        Node_DL *pInsert = (Node_DL*)malloc(sizeof(Node_DL));
+        if (!pInsert) {
+            // got ERROR;
+            return ERROR;
+        }
+        pInsert->data =  pArr[ix];
+        // head insert
+        pInsert->next = pFirst;
+        pInsert->prev = *dl;
+        pFirst->prev = pInsert;
+        (*dl)->next = pInsert;
+        
+        // tail insert
+        // pTail = (*dl);
+        // pInsert->next = NULL;
+        // pInsert->prev = pTail;
+        // pTail->next = pInsert;
+        // pTail = pInsert;
     }
 
     return OK;
@@ -75,31 +88,35 @@ Status InitLinkListWithArray_DL(LinkList_DL *dl, ElemType *arr, size_t len)
  * @brief head insert
  *        时间复杂度:O(1)
  *
- * @param dl
+ * @param dl 头节点的值不用更新, 所以传入 Node_DL * 类型
  * @param data
  * @return Status
  */
 Status InsertHead_DL(LinkList_DL dl, ElemType data)
 {
-    if(!dl){
+    if (!dl) {
         return ERROR;
     }
 
-    Node_DL *temp = (Node_DL*)malloc(sizeof(Node_DL) * 1);
-    if(!temp){
+    Node_DL *pInsert = (Node_DL*)malloc(sizeof(Node_DL) * 1);
+    Node_DL *pFirst = dl->next;
+    if(!pInsert){
         printf("memory allocate failed\r\n");
         return ERROR;
     }
-    temp->data = data;
-    temp->prev = dl; // prev point to head ndoe
-    temp->next = dl->next;
-    dl->next = temp; // update head node
+    pInsert->data = data;
+    pInsert->prev = dl; // prev point to head ndoe
+    pInsert->next = dl->next;
+    if (pFirst) // 空链表:pFirst == NULL
+        pFirst->prev = pInsert;
+    // dl->next->prev = pInsert; // 编译报错,等价
+    dl->next = pInsert; // update head node
 
     return OK;
 }
 
 /**
- * @brief tail insert
+ * @brief tail insert, 插入尾节点
  *
  * @param dl
  * @param data
@@ -107,29 +124,32 @@ Status InsertHead_DL(LinkList_DL dl, ElemType data)
  */
 Status InsertTail_DL(LinkList_DL dl, ElemType data)
 {
-    if(!dl){
+    if (!dl) {
         return ERROR;
     }
 
-    Node_DL *temp = dl->next, *prev = temp;
+    Node_DL *pInsert;
+    Node_DL *pCurr = dl->next, *pPrev = dl;
     // get tail ndoe
-    while(temp != NULL){
-        prev = temp;
-        temp = temp->next;
+    while(pCurr != NULL){
+        pPrev = pCurr;
+        pCurr = pCurr->next;
     }
 
     // create a new node
-    temp = (Node_DL*)malloc(sizeof(Node_DL) * 1);
-    temp->data = data;
-    temp->next = NULL;
-    temp->prev = prev;
-    prev->next = temp;
+    pInsert = (Node_DL*)malloc(sizeof(Node_DL) * 1);
+    if (!pInsert)
+        return ERROR;
+    pInsert->data = data;
+    pInsert->next = NULL;
+    pInsert->prev = pPrev;
+    pPrev->next = pInsert;
 
     return OK;
 }
 
 /**
- * @brief remove node
+ * @brief remove idx node
  *
  * @param dl
  * @param idx index start from 0
@@ -143,33 +163,35 @@ Status RemoveElem_DL(LinkList_DL dl, size_t idx, ElemType *data)
     }
 
     size_t jx = 0;
-    Node_DL *temp = dl->next, *prior = temp;
+    Node_DL *pCurr = dl->next, *pPrev = dl;
+    Node_DL *pNext;
 
-    while (temp != NULL && jx < idx)
-    {
-        prior = temp;
-        temp = temp->next;
+    while (pCurr != NULL && jx < idx) {
+        pPrev = pCurr;
+        pCurr = pCurr->next;
         ++jx;
     }
 
-    if(temp == NULL || jx > idx){
+    if(pCurr == NULL || jx > idx){
         return ERROR;
     }
 
-    prior->next = temp->next;
-
-    // 这里能有什么问题呢? 没有想明白
+    pPrev->next = pCurr->next;
+    pNext = pCurr->next;
+    pNext->prev = pPrev;
+    // pCurr->next->prev = pPrev;
+    // 这里能有什么问题呢? 为什么编译报错???
     // temp->next->prev = prior; // ?????????????????????????????????????????????????????
 
     // copy data
-    *data = temp->data;
-    free(temp);
+    *data = pCurr->data;
+    free(pCurr);
 
     return OK;
 }
 
 /**
- * @brief Modify element
+ * @brief Modify index element
  *
  * @param dl
  * @param idx
@@ -183,32 +205,90 @@ Status ModifyElem_DL(LinkList_DL dl, size_t idx, ElemType *data)
     }
 
     size_t jx = 0;
-    Node_DL *temp = dl->next;
+    Node_DL *pCurr = dl->next;
 
-    while(temp != NULL && jx < idx){
+    while(pCurr != NULL && jx < idx){
         ++jx;
-        temp = temp->next;
+        pCurr = pCurr->next;
     }
 
-    if(temp == NULL || jx > idx){
+    if(pCurr == NULL || jx > idx){
         return ERROR;
     }
 
-    temp->data = *data;
+    pCurr->data = *data;
 
     return OK;
 }
 
-Status GetElem_DL(LinkList_DL dl, size_t idx, ElemType *data)
+/**
+ * @fun Get index element
+ * 
+ * @param[in] dl
+ * @param[in] idx index start from 0
+ * @param[out] pData
+ * @ret
+*/
+Status GetElem_DL(LinkList_DL dl, size_t idx, ElemType *pData)
 {
+    if (!dl || idx < 0 || !pData)
+        return ERROR;
+    
+    Node_DL *pCurr = dl->next;
+    int jx = 0;
 
+    while (pCurr != NULL && jx < idx) {
+        pCurr = pCurr->next;
+        ++jx;
+    }
+
+    if (pCurr == NULL || jx > idx)
+        return ERROR;
+    
+    *pData = pCurr->data;
+
+    return OK;
 }
 
+/**
+ * @fun Get index node
+ * 
+ * @param[in] dl
+ * @param[in] idx start from 0
+ * @param[out] pNode return a pointer point to idx Node
+*/
+Status GetNode_DL(LinkList_DL dl, size_t idx, Node_DL **pNode)
+{
+    if (!dl || idx < 0 || !pNode)
+        return ERROR;
+    
+    Node_DL *pCurr = dl->next;
+    int jx = 0;
+
+    while (pCurr != NULL && jx < idx) {
+        pCurr = pCurr->next;
+        ++jx;
+    }
+
+    if (pCurr == NULL || jx > idx)
+        return ERROR;
+    
+    *pNode = pCurr; // return a pointer's value
+
+    return OK;
+}
+
+/**
+ * @fun Get previous node's value, 可以直接通过知道操作实现
+*/
 Status GetPriorElem_DL(LinkList_DL dl, Node_DL *node, Node_DL *prior)
 {
 
 }
 
+/**
+ * @fun Get Next Node's value, 可以直接通过知道操作实现
+*/
 Status GetNextElem_DL(LinkList_DL dl, Node_DL *node, Node_DL *next)
 {
 
@@ -216,14 +296,14 @@ Status GetNextElem_DL(LinkList_DL dl, Node_DL *node, Node_DL *next)
 
 /**
  * @brief 前向遍历
- *        适用于尾指针也保存的情况
+ *        适用于尾指针也保存的情况, 否则不知道尾指针, 从哪里开始遍历
  *
  * @param dl
  * @return Status
  */
 Status TraversePrior_DL(LinkList_DL dl)
 {
-
+    return ERROR;
 }
 
 /**
@@ -232,72 +312,184 @@ Status TraversePrior_DL(LinkList_DL dl)
  * @param dl
  * @return Status
  */
-Status TraverseNext_DL(LinkList_DL dl)
+Status TraverseNext_DL(LinkList_DL dl, const char *pInfo)
 {
     if(!dl){
         return ERROR;
     }
-    Node_DL *temp = dl->next; // from first node to tail node
+    Node_DL *pCurr = dl->next; // from first node to tail node
+    int jx = 0;
 
-    printf("Traverse:\r\n");
-    while (temp != NULL)
-    {
-        printf("%d ->", temp->data);
-        temp = temp->next;
+    printf("Traverse(%s):\r\n", pInfo);
+    while (pCurr != NULL) {
+        printf("[%d]:%d -> ", jx, pCurr->data);
+        pCurr = pCurr->next;
+        ++jx;
     }
     printf("\r\n\r\n");
 
     return OK;
 }
 
+/**
+ * @fun clear all node except head node
+*/
 Status Clear_DL(LinkList_DL dl)
 {
+    if (!dl)
+        return ERROR;
+    Node_DL *pCurr = dl->next;
+    
+    while (pCurr != NULL) {
+        Node_DL *temp = pCurr;
+        Node_DL *pNext = pCurr->next, *pPrev = pCurr->prev;
+        if (pPrev)
+            pPrev->next = pNext;
+        // 这么写为什么会编译报错???????
+        // pCurr->next.prev = pPrev;
+        if (pNext)
+            pNext->prev = pPrev;
+        pCurr = pCurr->next;
+        free(temp);
+        printf("free:0x%08X\n", temp);
+    }
 
+    return OK;
 }
 
-Status Deinit_DL(LinkList_DL dl)
+/**
+ * @fun clear all ndoe include head node
+*/
+Status Deinit_DL(LinkList_DL *dl)
 {
+    if (!dl)
+        return ERROR;
+    Node_DL *pCurr = (*dl)->next;
+    
+    while (pCurr != NULL) {
+        Node_DL *temp = pCurr;
+        Node_DL *pNext = pCurr->next, *pPrev = pCurr->prev;
+        if (pPrev)
+            pPrev->next = pNext;
+        // 这么写为什么会编译报错???????
+        // pCurr->next.prev = pPrev;
+        if (pNext)
+            pNext->prev = pPrev;
+        pCurr = pCurr->next;
+        free(temp);
+        printf("free:0x%08X\n", temp);
+    }
 
+    free(*dl); // free head node
+    printf("free head:0x%08X\n", *dl);
+
+    *dl = NULL;
+
+    return OK;
 }
 
-void DoubleListTest()
+void DoubleListTest(void)
 {
     LinkList_DL dl; // 头指针
     ElemType data;
     size_t idx;
+    Status ret;
+    Node_DL *pNode, *pPrev, *pNext;
 
-    InitLinkList_DL(&dl);
-    TraverseNext_DL(dl);
+    ret = InitLinkList_DL(&dl);
+    CHECK_RET_OP(ret, "init double linklist");
+    ret = TraverseNext_DL(dl, "init double linklist");
+    CHECK_RET_OP(ret, "init double linklist");
 
     data = 100;
-    InsertHead_DL(dl, data);
-    printf("add head:%d\r\n", data);
-    TraverseNext_DL(dl);
+    ret = InsertHead_DL(dl, data);
+    CHECK_RET_OP(ret, "insert head:100");
+    ret = TraverseNext_DL(dl, "insert head:100");
+    CHECK_RET_OP(ret, "insert head:100");
 
     data = 58;
-    InsertHead_DL(dl, data);
-    printf("add head:%d\r\n", data);
-    TraverseNext_DL(dl);
+    ret = InsertHead_DL(dl, data);
+    CHECK_RET_OP(ret, "insert head:58");
+    ret = TraverseNext_DL(dl, "insert head:58");
+    CHECK_RET_OP(ret, "insert head:58");
+
+    data = 99;
+    ret = InsertHead_DL(dl, data);
+    CHECK_RET_OP(ret, NULL);
+    ret = TraverseNext_DL(dl, "insert head:99");
+    CHECK_RET_OP(ret, NULL);
 
     data = 123;
-    InsertTail_DL(dl, data);
-    printf("insert tail:%d\r\n", data);
-    TraverseNext_DL(dl);
+    ret = InsertTail_DL(dl, data);
+    CHECK_RET_OP(ret, NULL);
+    ret = TraverseNext_DL(dl, "insert tail:123");
+    CHECK_RET_OP(ret, NULL);
 
-    idx = 1;
-    RemoveElem_DL(dl, idx, &data);
+    data = 456;
+    ret = InsertTail_DL(dl, data);
+    CHECK_RET_OP(ret, NULL);
+    ret = TraverseNext_DL(dl, "insert tail:456");
+    CHECK_RET_OP(ret, NULL);
+
+    idx = 0;
+    ret = RemoveElem_DL(dl, idx, &data);
+    CHECK_RET_OP(ret, NULL);
     printf("remove index:%d val:%d\r\n", idx, data);
-    TraverseNext_DL(dl);
+    ret = TraverseNext_DL(dl, "remove idx:0");
+    CHECK_RET_OP(ret, NULL);
+
+    idx = 2;
+    ret = RemoveElem_DL(dl, idx, &data);
+    CHECK_RET_OP(ret, NULL);
+    printf("remove index:%d val:%d\r\n", idx, data);
+    ret = TraverseNext_DL(dl, "remove idx:2");
+    CHECK_RET_OP(ret, NULL);
 
     idx = 0;
     data = 12345;
-    ModifyElem_DL(dl, idx, &data);
-    printf("Modify idx:%d value:%d", idx, data);
-    TraverseNext_DL(dl);
+    ret = ModifyElem_DL(dl, idx, &data);
+    CHECK_RET_OP(ret, NULL);
+    ret = TraverseNext_DL(dl, "modify idx:0 val:12345");
+    CHECK_RET_OP(ret, NULL);
+
+    idx = 1;
+    ret = GetElem_DL(dl, idx, &data);
+    CHECK_RET_OP(ret, NULL);
+    printf("get elem idx:%d data:%d\n", idx, data);
+    ret = TraverseNext_DL(dl, "get elem");
+    CHECK_RET_OP(ret, NULL);
+
+    ret = GetNode_DL(dl, 1, &pNode);
+    CHECK_RET_OP(ret, "get node");
+    pPrev = pNode->prev;
+    pNext = pNode->next;
+    // 这么写为什么会报错????
+    // printf("get node's val:%d prev:%d next:%d\n", pNode->data, pNode->prev->data, pNode->next->data);
+    printf("get node's val:%d prev:%d next:%d\n", pNode->data, pPrev->data, pNext->data);
+    ret = TraverseNext_DL(dl, "get node");
+    CHECK_RET_OP(ret, "get node");
+
+    ret = Clear_DL(dl);
+    CHECK_RET_OP(ret, NULL);
+    ret = TraverseNext_DL(dl, "clear");
+    CHECK_RET_OP(ret, NULL);
+
+    ret = Deinit_DL(&dl);
+    CHECK_RET_OP(ret, "deinit");
+    ret = TraverseNext_DL(dl, "Deinit_DL");
+    CHECK_RET_OP(ret, "deinit traverse");
 }
-#else // #ifdef WITHOUT_TAIL_POINTER
+
 
 /*********************************** 2.包含尾指针 ********************************************/
+// 不保存尾指针的双向链表的操作与单向链表相比没有什么优势, 且写法差别不大, 还是需要保存尾指针
+// 保存尾指针可以反向遍历
+// typedef struct
+// {
+//     LinkList_DL head, tail;
+//     size_t size;
+// } LinkList_DL_v2;
+#if HAVE_TAIL_POINTER
 /**
  * @brief initialize
  *        (1) 头结点的 prev = NULL, 尾节点的 next = NULL;
@@ -816,5 +1008,6 @@ void DoubleLinkListTest3()
 }
 
 
+#endif
 
 #endif

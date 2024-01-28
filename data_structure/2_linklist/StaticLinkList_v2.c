@@ -13,7 +13,7 @@
 // 2.行百里者半九十
 
 
-#include "StaticLinkList.h"
+#include "StaticLinkList_v2.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -21,11 +21,12 @@
 #include <stdbool.h>
 
 
-/** 对于没有指针的其它语言, 可以使用这种方式实现静态链表 */
+#if STATIC_LINK_LIST_V2
 
-
-
-/********************************************* 引入备用链表对空闲节点进行管理 *******************************************************/
+/********************************************* 
+ * 引入备用链表对空闲节点进行管理 
+ * 实际 StaticLinkListV1 已经实现了, 备用链表从 space[0].cur 开始
+ ********************************************************/
 typedef struct {
     // size_t maxSize;
     // size_t availableHeadIndex; // 已经使用链表的头指针(索引), 头指针不保存数据; headIndex=0 表示空链表, headIndex!=0表示有元素
@@ -54,7 +55,7 @@ static LinkListManager_SL _linkListManagerSL;
  *        最后一个节点的 cur 为 0
  *        中间节点:cur = next_node.index;
  */
-Status InitSpace_SL(LinkList_SL sL)
+Status InitList(LinkList_SL sL)
 {
     // 数组元素初始化为全 0 这种方法不好搞
     // printf("address:%#p size:%ld\r\n", sL, sizeof(Node_SL) * MAXSIZE_SL);
@@ -381,16 +382,6 @@ Status MergetLinkList_SL(LinkList_SL sL1, LinkList_SL sL2, LinkList_SL sL3)
 
 }
 
-/********************************************* P33 例题1 *******************************************************/
-/**
- * @brief test 计算: (A-B)U(B-A),  A B 都为链表
- *
- */
-void difference(LinkList_SL space , int index)
-{
-
-}
-
 //测试函数
 void test_SL()
 {
@@ -452,3 +443,4 @@ void SL_test2()
 }
 
 
+#endif

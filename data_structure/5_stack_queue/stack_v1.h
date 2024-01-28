@@ -1,6 +1,8 @@
 #ifndef __STACK_V1_H__
 #define __STACK_V1_H__
 
+// 顺序存储的栈
+
 typedef int Status;
 #define OK      1
 #define ERROR   0

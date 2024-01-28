@@ -10,5 +10,4 @@
  */
 #include "queue_v2.h"
 
-// 链式存储
 

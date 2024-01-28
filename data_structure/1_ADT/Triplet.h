@@ -2,7 +2,7 @@
 #define __TRIPLET_H__
 
 
-// ºê¶¨ÒåµÄ³£Á¿
+// ï¿½ê¶¨ï¿½ï¿½Ä³ï¿½ï¿½ï¿½
 #define TRUE    1
 #define FALSE   0
 #define OK      1
@@ -10,7 +10,7 @@
 #define INFEASIBLE  -1
 #define OVERFLOW    -2
 
-// ±äÁ¿
+// ï¿½ï¿½ï¿½ï¿½
 typedef int Status;
 typedef int ElemType;
 
@@ -22,7 +22,7 @@ typedef struct Triplet
 } Triplet;
 
 // member functions
-Triplet* InitTriplet(ElemType a, ElemType b, ElemType c);
+Triplet* InitTripletWithElem(ElemType a, ElemType b, ElemType c);
 Status DestroyTriplet(Triplet *T);
 ElemType Get(Triplet *T, int i);
 Status Put(Triplet *T, int i, ElemType elem);

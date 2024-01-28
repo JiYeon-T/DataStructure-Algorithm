@@ -5,6 +5,11 @@
 #include "list.h"
 
 
+// TODO:
+/** 应用场景 **/
+// (1) app app queue 是如何实现的;
+// (2) 通过结构体元素获取结构体其他元素地址, service_bt_list.c;
+
 
 // define
 #define MUSIC_DATA_BLOCK_LEN        900

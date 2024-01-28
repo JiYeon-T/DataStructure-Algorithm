@@ -10,4 +10,3 @@
  */
 #include "queue_v1.h"
 
-// 顺序存储

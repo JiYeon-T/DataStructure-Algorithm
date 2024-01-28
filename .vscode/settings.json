@@ -1,0 +1,28 @@
+{
+    "files.associations": {
+        "errno.h": "c",
+        "stdlib.h": "c",
+        "config.h": "c",
+        "linearlist_v1.h": "c",
+        "doublelinklist.h": "c",
+        "doublecirclelinklist.h": "c",
+        "staticlinklist.h": "c",
+        "app_list.h": "c",
+        "limits.h": "c",
+        "linklist_v2.h": "c",
+        "linklist_v1.h": "c",
+        "stdio.h": "c",
+        "time.h": "c",
+        "array": "c",
+        "string": "c",
+        "tuple": "c",
+        "circlelinklist.h": "c",
+        "*.in": "cpp",
+        "build_config.h": "c",
+        "staticlinklist_v2.h": "c",
+        "staticlinklist_v1.h": "c",
+        "linearlistv2.h": "c",
+        "stdbool.h": "c",
+        "linklist_v4.h": "c"
+    }
+}

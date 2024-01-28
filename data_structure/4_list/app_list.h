@@ -3,6 +3,11 @@
 
 #include "list.h"
 
+
+// 链表的使用:
+// 法1. 将成员放到 ElemType 中;
+// 法2. 链表的 node 作为结构体成员, #include <nuttx/list.h>
+
 // 在音频数据，mic 数据，铃声数据缓冲等场景作为缓冲队列使用
 
 typedef enum

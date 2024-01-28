@@ -1,7 +1,7 @@
 /**
  * @file Triplet.c
  * @author your name (you@domain.com)
- * @brief Í¨¹ý³éÏóÊý¾ÝÀàÐÍÈýÔª×éÑ§Ï°Êý¾Ý³éÏó
+ * @brief Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ñ§Ï°ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
  * @version 0.1
  * @date 2021-12-09
  *
@@ -12,10 +12,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/** Ëã·¨:ÓÐÇîÐÔ, È·¶¨ÐÔ, ¿ÉÐÐÐÔ, ÊäÈë, Êä³ö **/
+/** ï¿½ã·¨:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, È·ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ **/
 
 // member functions
-Triplet* InitTriplet(ElemType a, ElemType b, ElemType c)
+Triplet* InitTripletWithElem(ElemType a, ElemType b, ElemType c)
 {
     Triplet *T = (Triplet*)malloc(sizeof(Triplet) * 1);
     if(!T){
@@ -35,14 +35,13 @@ Status DestroyTriplet(Triplet *T)
     return OK;
 }
 
-// ÏÂ±ê´Ó 0 ¿ªÊ¼
+// ï¿½Â±ï¿½ï¿½ 0 ï¿½ï¿½Ê¼
 ElemType Get(Triplet *T, int i)
 {
-    if(i<0 || i>3){
+    if (i<0 || i>3) {
         return ERROR;
     }
     return T->data[i];
-
 }
 
 Status Put(Triplet *T, int i, ElemType elem)
@@ -81,10 +80,10 @@ ElemType Min(Triplet *T)
 
 void TripletTest()
 {
-    Triplet *T; // Ö¸ÕëµÄÖµ±£´æµÄÊÇÊý¾ÝÇøµÄÒ»¸öµØÖ·;
+    Triplet *T; // Ö¸ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö·;
     int index = 2;
 
-    T = InitTriplet(1, 2, 3);
+    T = InitTripletWithElem(1, 2, 3);
     printf("data[%d]:%d\n", index, Get(T, index));
     Put(T, index, 100);
     printf("data[%d]:%d\n", index, Get(T, index));

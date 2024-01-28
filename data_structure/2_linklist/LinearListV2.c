@@ -1,18 +1,18 @@
-#include "LinearList.h"
-
-//#define LINEAR_LIST 1
-#if LINEAR_LIST
-
+#include "LinearListV2.h"
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdint.h>
 
 
-extern int errno;
 
+#if defined(DataStructLinearListV2) && (DataStructLinearListV2 == 1)
 
 #define DEFAULT_LIST_SIZE       20
+
+
+extern int errno;
+
 
 /**
 * @fun: initialize list
@@ -109,7 +109,7 @@ size_t ListLength_L(const LList *L)
 * @desc: get the element number, idx from 0 to (N-1), N = ElemNum
 * @param: L
 */
-Status GetElem_LL(const LList *L, size_t idx, ElemType *val)
+Status GetElem_L(const LList *L, size_t idx, ElemType *val)
 {
     if(!L){
         fprintf(stderr, "null ptr\n");
@@ -156,6 +156,7 @@ static bool equal(ElemType a, ElemType b)
     // 如果是一个结构体(或者类)则还需要重载 ==
     return a == b;
 }
+
 size_t LocateElem_L(const LList *L, ElemType e, pCompare fun)
 {
     if(!L){
@@ -364,7 +365,7 @@ void MergeList_L(const LList *L1, const LList *L2)
 }
 
 
-void ListTest_L()
+void LinearListTest_L()
 {
     LList list, list2;
     Status ret;
@@ -372,6 +373,7 @@ void ListTest_L()
     ElemType tempRes;
     size_t idx = 5;
 
+    printf("Linear List V2 test\n");
     ret = InitList_L(&list);
 //    printf("original address:%#p\n", &list);
 //    printf("accept address:%#p\n", list.elem);
@@ -437,11 +439,11 @@ void ListTest_L()
 //    ListTraverse_L(&list2);
 
 
-    print("merge:\n");
+    printf("merge:\n");
     MergeList_L(&list, &list2);
 
 }
 
-#endif // LINEAR_LIST
+#endif
 
 

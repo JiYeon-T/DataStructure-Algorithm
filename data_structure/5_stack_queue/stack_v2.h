@@ -5,6 +5,8 @@
 
 
 // 栈的链式存储: 单向链表
+
+
 typedef struct {
     struct StackNode_t *next;
     ElemType data;

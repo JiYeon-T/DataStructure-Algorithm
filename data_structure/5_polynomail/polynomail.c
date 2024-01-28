@@ -11,44 +11,57 @@
  */
 #include "polynomail.h"
 
-/**
- * @brief
- *
- * @param poly
- */
-void PolynomailPrinfInfo(void *poly)
-{
-    ElemType *temp = (ElemType*)poly;
-    printf("%2.1fx^%d -> ", temp->coef, temp->expn);
 
-    return;
+#if defined(DATA_STRUCTURE_POLYNOMAIL) && (DATA_STRUCTURE_POLYNOMAIL == 1)
+
+/**
+ * @fun linklist node print function
+ *      only print current node information
+ * @param[in] pNode node pointer
+*/
+static void print_poly_node_info(Node *pNode)
+{
+    printf("%2.2f X^%d + ", pNode->data.coef, pNode->data.expn);
 }
 
+
 /**
- * @brief 创建由 m 个元素组成的 "有序链表"
+ * @brief 创建由 arrSize 个(系数,指数)对 组成的 "有序链表"
  *
  * @param p
- * @param arr
- * @param m
+ * @param pArr array consist of (coef, expn) pair
+ * @param arrSize
  * @return Status
  */
-Status CreatPolyn(polynomial *p, ElemType *arr, int m)
+Status CreatPolyn(polynomial *p, ElemType *pArr, int arrSize)
 {
-    if(InitLinkList(p) != OK){
+    if (!p || !pArr || arrSize <= 0)
         return ERROR;
-    }
-    return InitLinkListWithArray(p, arr, m);
+
+    return InitLinkListWithArray(p, pArr, arrSize);
 }
 
 /**
- * @brief destory polynomial
+ * @brief destory polynomial, deinit linklist(include head node)
  *
  * @param p
  * @return Status
  */
 Status DestroyPolyn(polynomial *p)
 {
-    return DestroyLinkList(p);
+    return DeinitLinkList(p);
+}
+
+
+/**
+ * @brief Traverse the linklist and print node information
+ *
+ * @param poly polynomial type(Node *), linklist head pointer
+ */
+void PrintPoly(const polynomial poly, const char *pInfo)
+{
+    Status ret = Traverse(poly, pInfo, print_poly_node_info);
+    CHECK_RET_OP(ret, pInfo);
 }
 
 /**
@@ -60,31 +73,54 @@ Status DestroyPolyn(polynomial *p)
 int PolynLength(polynomial p)
 {
     int len;
-    if(LinkListLength(p, &len) != OK){
-        len = -1;
+
+    if (LinkListLength(p, &len) != OK) {
+        return -1;
     }
 
     return len;
 }
 
 /**
- * @brief p3 = p1 + p2
+ * @brief p1 = p1 + p2, 结果保存到 p1, 销毁 p2
  *        (1) 将原来的节点直接从链表上拿下来; 会修改原始值的方式;
  *        (2) 拷贝 -> 创建新节点 -> 插入;
+ *        一元多项式的加法, 例如:
+ *        l1:a1x^100 + a2x^15 + a3x^2 + a4x^1 + a5
+ *        l2:b1x^99 + b2x^10 + b3x^5 + b4x^1 + b5
+ *        求 l1+l2?
+ * 
+ *        算法(与归并排序类似):
+ *        1.  假设 q1, q2 分别指向 p1, p2(前提是有序链表)的某一个节点, 比较 p1, p2 的指数部分, 系数部分比较大小有三种情况
+ *        (1) q1 < q2, 将 q1 插入到结果链表(引用);
+ *        (2) q1 > q2, 将 q2 插入到将诶过链表(引用);
+ *        (3) q1 == q2, 分以下两种情况
+ *        a. 对于具有相同指数的项, 系数相加,和不为 0 则构成多项式中的一项; 和为 0, 则删除该项
+ *        b. 对于没有相同系数的项, 则直接添加到结果链表中;
+ *        key(1) 拷贝数据 -> 创建新节点 -> 插入结果链表(不直接从原链表上拿数据下来);
  *
- * @param p1
+ * @param p1 p1, p2 都是有序链表, 如果是无序的链表, 要进行排序操作
  * @param p2
- * @param p3
  * @return Status
  */
-Status PolynAdd_v1(polynomial p1, polynomial p2, polynomial *p3)
+Status AddPolyV1(polynomial *p1, polynomial *p2)
 {
-    if(!p3){
+    if (!p1 && !p2) {
         return ERROR;
     }
 
+    if (!p1) {
+        // TODO:
+        // copy p2 to p1
+        return OK;
+    }
+
+    if (!p2) {
+        return OK;
+    }
+
     Node *temp1 = p1->next, *temp2 = p2->next;
-    if(!temp1 && !temp2){
+    f(!temp1 && !temp2){
         return OK;
     }
     else if(!temp1){
@@ -116,15 +152,14 @@ Status PolynAdd_v1(polynomial p1, polynomial p2, polynomial *p3)
 
 /**
  * @brief p3 = p1 + p2
- *        (1) 将原来的节点直接从链表上拿下来; 会修改原始值的方式;
- *        (2) 拷贝 -> 创建新节点 -> 插入;
+ *        key(2) 将原来的节点直接从链表上拿下来; 会修改原始链表的方式;
  *
  * @param p1
  * @param p2
  * @param p3
  * @return Status
  */
-Status PolynAdd_v2(polynomial p1, polynomial p2, polynomial *p3)
+Status AddPolyV2(polynomial p1, polynomial p2, polynomial *p3)
 {
     if(!p3){
         return ERROR;
@@ -182,40 +217,27 @@ Status PolynAdd_v2(polynomial p1, polynomial p2, polynomial *p3)
 }
 
 /**
- * @brief p1 = p1 + p2
- *
- * @param p1
- * @param p2
- * @return Status
+ * @brief p1 = p1 - p2, 并销毁 p2
+ *        p3 = p1 + (-1)*p2
+ * 
+ * @param p1 
+ * @param p2 
+ * @return Status 
  */
-Status PolynAdd_v2(polynomial p1, polynomial p2)
+Status SubtractPolyn(polynomial *p1, polynomial *p2)
 {
 
 }
 
-
 /**
- * @brief p3 = p1 - p2 -> p3 = p1 + (-1)*p2
+ * @brief p1 = p1 * p2, 并销毁 p2
  * 
  * @param p1 
  * @param p2 
  * @param p3 
  * @return Status 
  */
-Status PolynSubtract(polynomial p1, polynomial p2, polynomial *p3)
-{
-
-}
-
-/**
- * @brief multiply p3 = p1 * p2
- * 
- * @param p1 
- * @param p2 
- * @param p3 
- * @return Status 
- */
-Status PolynMultiply(polynomial p1, polynomial p2, polynomial *p3)
+Status MultiplyPolyn(polynomial *p1, polynomial *p2)
 {
 
 }
@@ -227,7 +249,7 @@ Status PolynMultiply(polynomial p1, polynomial p2, polynomial *p3)
  * @param b
  * @return int 1:a>b; 0:a==b; -1:a<b; -999:ERROR
  */
-int CmpExpn(Node * a, Node *b)
+int CmpExpn(term *a, term *b)
 {
     if(!a || !b){
         printf("null ptr\r\n");
@@ -245,9 +267,28 @@ int CmpExpn(Node * a, Node *b)
     }
 }
 
+// linklist basic operation
+void PolynTest1(void)
+{
+    printf("polynomial test1\n");
+    polynomial poly;
+    Status ret;
+    ElemType val = {1.5, 2};
 
+    ret = InitLinkList(&poly);
+    CHECK_RET_OP(ret, "Init");
+    ret = Traverse(poly, "Init poly", print_poly_node_info);
+    CHECK_RET_OP(ret, "Init");
 
-void PolynTest()
+    ret = InsertAtFirst(poly, &val);
+    CHECK_RET_OP(ret, "Insert Head");
+    ret = Traverse(poly, "Insert Head:(1.5x^2)", print_poly_node_info);
+    CHECK_RET_OP(ret, "Insert Head");
+}
+
+// polynomial math operation
+#if 0
+void PolynTest2(void)
 {
     polynomial p1, p2, p3;
     // 有序链表
@@ -280,3 +321,6 @@ void PolynTest()
 
     return;
 }
+#endif
+
+#endif

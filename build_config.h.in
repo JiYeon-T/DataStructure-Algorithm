@@ -15,7 +15,7 @@
 #define DataStructDoubleLinkListV1       0
 #define DOUBLE_CIRCLE_LINKLIST           0
 
-#define DATA_STRUCTURE_POLYNOMAIL        0
+#define DATA_STRUCTURE_POLYNOMAIL        1
 #define DataStructRingBuffer             0
 #define DataStructList                   0
 #define DataStructPolynomail             0

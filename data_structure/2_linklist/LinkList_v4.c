@@ -32,10 +32,10 @@ void struct_member_size_test(void)
  * @fun 节点数据为 int 类型
  * @param[in] pNode
 */
-static void print_general_node_info(Node *pNode)
-{
-    printf("%d -> ", pNode->data);
-}
+// static void print_general_node_info(Node *pNode)
+// {
+//     printf("%d -> ", pNode->data);
+// }
 
 /**
  * @fun 从小到大排序, a,b 满足从小到大, 返回 true; 否则返回 false
@@ -44,10 +44,10 @@ static void print_general_node_info(Node *pNode)
  * @param[in] b
  * @ret
 */
-static int InOrderCompare(ElemType a, ElemType b)
-{
-    return (a <= b ? 1 : 0);
-}
+// static int InOrderCompare(ElemType a, ElemType b)
+// {
+//     return (a <= b ? 1 : 0);
+// }
 
 /**
  * @fun 从大到小排序, a,b 满足从大到小, 返回 true; 否则返回 false
@@ -56,10 +56,10 @@ static int InOrderCompare(ElemType a, ElemType b)
  * @param[in] b
  * @ret
 */
-static int ReverseOrderCompare(ElemType a, ElemType b)
-{
-    return (a >= b ? 1 : 0);
-}
+// static int ReverseOrderCompare(ElemType a, ElemType b)
+// {
+//     return (a >= b ? 1 : 0);
+// }
 
 /**
  * @fun 找相等的元素节点, 相同即满足条件, 返回 true; 不相等, 不满足条件， 返回 false
@@ -68,10 +68,10 @@ static int ReverseOrderCompare(ElemType a, ElemType b)
  * @param[in] b
  * @ret
 */
-static int EqualCompare(ElemType a, ElemType b)
-{
-    return (a == b ? 1 : 0);
-}
+// static int EqualCompare(ElemType a, ElemType b)
+// {
+//     return (a == b ? 1 : 0);
+// }
 
 /**
  * @fun 交换链表中的两个节点
@@ -552,6 +552,241 @@ Status DeleteByIdx(LinkList *L, size_t idx, ElemType *e)
 }
 
 /**
+ * @fun 分配由 p 指向的值为 e 的节点
+ * 
+ * @param[out] node ptr
+ * @param[in] nodeVal
+ * @ret true/false
+*/
+Status MakeNode(Node **pNode, ElemType nodeVal)
+{
+    if (!pNode)
+        return ERROR;
+
+    Node *pNew = (Node*)malloc(sizeof(Node));
+    if (!pNew)
+        return ERROR;
+    memset(pNew, 0x00, sizeof(Node));
+    COPY(&pNew->data, &nodeVal, sizeof(ElemType));
+    *pNode = pNew;
+
+    return OK;
+}
+
+/**
+ * @fun 释放节点
+*/
+Status FreeNode(Node **pNode)
+{
+    if (!pNode)
+        return ERROR;
+
+    free(*pNode);
+    *pNode = NULL;
+
+    return OK;
+}
+
+/**
+ * @fun 删除链表中第一个节点, 但是不释放内存,以 pDelNode 返回
+ * 
+ * @param[in] L linklist
+ * @param[out] pDelNode 返回指向该节点的指针
+ * @ret
+*/
+Status DelFirst(LinkList L, Node **pDelNode)
+{
+    if (!L || !pDelNode)
+        return ERROR;
+
+    Node *pFirst = L->next;
+    L->next = pFirst->next;
+    *pDelNode = pFirst;
+
+    return OK;
+}
+
+/**
+ * @fun Append a new node at tail
+ * 
+ * @param[in] L
+ * @param[in] pNew point to new node
+ * @ret
+*/
+Status Append(LinkList L, Node *pNew)
+{
+    if (!L || !pNew)
+        return ERROR;
+
+    Node *pCurr = L->next, *pPrev = L;
+
+    while (pCurr) {
+        pPrev = pCurr;
+        pCurr = pCurr->next;
+    }
+    pPrev->next = pNew;
+
+    return OK;
+}
+
+/**
+ * @fun 删除最后一个节点并返回该链表指针 pDelNode
+ * 
+ * @param[in] L
+ * @param[out] pDelNode
+*/
+Status RemoveTail(LinkList L, Node **pDelNode)
+{
+    if (!L || !pDelNode)
+        return ERROR;
+    
+    Node *pCurr = L->next, *pPrev = L;
+
+    while (pCurr) {
+        pPrev = pCurr;
+        pCurr = pCurr->next;
+    }
+    pPrev->next = NULL;
+    *pDelNode = pCurr;
+
+    return OK;
+}
+
+/**
+ * @fun 将 s 插入 p 所指节点前, s->p
+ * 
+ * @param[in] p
+ * @param[in] s
+ * @ret
+*/
+Status InsertBefore(LinkList L, Node *p, Node *s)
+{
+    if (!L || !p || !s)
+        return ERROR;
+
+    Node *pCurr = L->next, *pPrev = L;    
+
+    while (pCurr && (pCurr != p)) {
+        pPrev = pCurr;
+        pCurr = pCurr->next;
+    }
+    if (!pCurr) // can't find this node
+        return ERROR;
+    s->next = p;
+    pPrev->next = s;
+
+    return OK;
+}
+
+/**
+ * @fun 将 s 插入 p 所指节点后 p->s
+ * 
+ * @param[in] p
+ * @param[in] s
+ * @ret
+*/
+Status InsertAfter(LinkList L, Node *p, Node *s)
+{
+    if (!L || !p || !s)
+        return ERROR;
+
+    Node *pCurr = L->next, *pPrev = L;    
+
+    while (pCurr && (pCurr != p)) {
+        pPrev = pCurr;
+        pCurr = pCurr->next;
+    }
+    if (!pCurr) // can't find this node
+        return ERROR;
+    s->next = p->next;
+    p->next = s;
+
+    return OK;
+}
+
+/**
+ * @fun 已知 p 为链表中的一个节点, 设置节点的新值
+ * 
+ * @param[in] L
+ * @param[in] p
+ * @param[in] nodeNewVal
+ * @ret
+*/
+Status SetCurrElem(LinkList L, Node *p, ElemType nodeNewVal)
+{
+    if (!L || !p)
+        return ERROR;
+    
+    Node *pCurr = L->next;
+
+    while (pCurr && (pCurr != p)) {
+        pCurr = pCurr->next;
+    }
+    if (!pCurr) // p is not this linklist's node
+        return ERROR;
+    COPY(&pCurr->data, &nodeNewVal, sizeof(ElemType));
+
+    return OK;
+}
+
+/**
+ * @fun 获取节点的值
+ * 
+ * @param[in] L
+ * @param[in] p
+ * @param[out] nodeNewVal
+ * @ret
+*/
+Status GetCurrElem(LinkList L, Node *p, ElemType *pNode)
+{
+    if (!L || !p)
+        return ERROR;
+    
+    Node *pCurr = L->next;
+
+    while (pCurr && (pCurr != p)) {
+        pCurr = pCurr->next;
+    }
+    if (!pCurr) // p is not this linklist's node
+        return ERROR;
+    COPY(pNode, &pCurr->data, sizeof(ElemType));
+
+    return OK;
+}
+
+/**
+ * @fun: 删除节点, 不释放内存
+*/
+Status DeleteNode(LinkList L, Node **pDelete)
+{
+    if (!L || !pDelete)
+        return ERROR;
+    
+    Node *pPrev = L, *pCurr = L->next;
+    while (pCurr && (pCurr != *pDelete)) {
+        pPrev = pCurr;
+        pCurr = pCurr->next;
+    }
+    if (!pCurr) // can't find pDelete in this linklist
+        return ERROR;
+    
+    pPrev->next = pCurr->next;
+
+    return OK;
+}
+
+
+/**
+ * @fun 
+*/
+bool ListEmpty(LinkList L)
+{
+    size_t len = 0;
+    LinkListLength(L, &len);
+    return (len == 0 ? true : false);
+}
+
+/**
  * @fun 链表排序, 冒泡排序, swap 方法已经实现
  *
  * @param[in] L
@@ -569,8 +804,17 @@ Status BubbleSortLinkList(LinkList L, compare_t pCompareFun)
         Node *pJ = pI->next, *pPrevJ = pI;
         for (; pJ != NULL; pPrevJ = pJ, pJ = pJ->next) {
             if (pCompareFun(pI->data, pJ->data) == 0) { // 满足 pCompareFun 规定的交换要求
-                if(SwapNode(pPrevI, pI, pPrevJ, pJ) != OK)
+                if(SwapNode(pPrevI, pI, pPrevJ, pJ) != OK) // {
                     return ERROR;
+                // } else { // 交换后交换 pi, pj 指针
+                //     Node *temp = pJ, *prev = pPrevJ;
+                //     pJ = pI;
+                //     pPrevJ = pPrevI;
+                //     pI = temp;
+                //     pPrevI = prev;
+                // }
+                // TODO:
+                // pj, pj 交换后, 链表的遍历出现异常
             }
         }
     }
@@ -625,6 +869,96 @@ Status DeinitLinkList(LinkList *L)
     *L = NULL;
 
     return OK;
+}
+
+#if 0
+
+
+void LinkListTest2()
+{
+//     LinkList pList; // Node * pList;
+//     ElemType arr[5] = {5, 7, 22, 111, 3};
+
+//     InitLinkListWithArray_L(&pList, arr, sizeof(arr)/sizeof(arr[0]));
+//     printf("get address:%#p\n", pList);
+//     printf("init:\r\n");
+//     Traverse_L(pList);
+
+//     Insert_L(pList, 22, 99);
+//     printf("insert:99\r\n");
+//     Traverse_L(pList);
+
+//     Delete_L(pList, 111);
+//     printf("delete:111\r\n");
+//     Traverse_L(pList);
+
+// //    printf("arg:%#p\n", pList);
+//     Clear_L(pList);
+//     printf("clear\r\n");
+//     Traverse_L(pList);
+
+//     InserHead_L(pList, 1234);
+//     printf("insert head node:1234\r\n");
+//     Traverse_L(pList);
+
+//     InsertAtTail(pList, 4568);
+//     printf("insert tail node:4568\r\n");
+//     Traverse_L(pList);
+
+//     Deinit_L(&pList);
+//     printf("deinit\r\n");
+//     Traverse_L(pList);
+}
+
+void LinkListTest3(void)
+{
+    printf("Linklist v4 test3\n");
+    ElemType data, insertVal;
+    Status ret;
+    size_t listSize = 10;
+    size_t index = 5;
+    Node *head;
+    ElemType arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1088};
+    position_t pos;
+
+    ret = InitLinkListWithArray(&head, arr, sizeof(arr)/sizeof(arr[0]));
+    CHECK_RET_OP(ret, "Init with array");
+    LinkListLength(head, &listSize);
+    printf("List size:%d\n", listSize);
+    ret = Traverse(head, "InitLinkList with array", print_general_node_info);
+    CHECK_RET_OP(ret, "Init");
+
+    data = 4567;
+    ret = InsertAtTail(head, &data);
+    CHECK_RET_OP(ret, "insert:4567 at tail");
+    LinkListLength(head, &listSize);
+    printf("List size:%d\n", listSize);
+    ret = Traverse(head, "insert:4567 at tail", print_general_node_info);
+    CHECK_RET_OP(ret, "insert at tail");
+
+    data = 0;
+    ret = OrderInsert(&head, data, InOrderCompare);
+    CHECK_RET_OP(ret, "OrderInsert:0");
+    LinkListLength(head, &listSize);
+    printf("List size:%d\n", listSize);
+    ret = Traverse(head, "OrderInsert:0", print_general_node_info);
+    CHECK_RET_OP(ret, "OrderInsert:0");
+
+    data = 258;
+    ret = OrderInsert(&head, data, InOrderCompare);
+    CHECK_RET_OP(ret, "OrderInsert:258");
+    LinkListLength(head, &listSize);
+    printf("List size:%d\n", listSize);
+    ret = Traverse(head, "OrderInsert:258", print_general_node_info);
+    CHECK_RET_OP(ret, "OrderInsert:258");
+
+    data = 9999;
+    ret = OrderInsert(&head, data, InOrderCompare);
+    CHECK_RET_OP(ret, "OrderInsert:9999");
+    LinkListLength(head, &listSize);
+    printf("List size:%d\n", listSize);
+    ret = Traverse(head, "OrderInsert:9999", print_general_node_info);
+    CHECK_RET_OP(ret, "OrderInsert:9999");
 }
 
 //链表测试函数
@@ -717,57 +1051,6 @@ void linklist_api_test4(void)
     CHECK_RET_OP(ret, "LocateElem");
 }
 
-void LinkListTest3(void)
-{
-    printf("Linklist v4 test3\n");
-    ElemType data, insertVal;
-    Status ret;
-    size_t listSize = 10;
-    size_t index = 5;
-    Node *head;
-    ElemType arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1088};
-    position_t pos;
-
-    ret = InitLinkListWithArray(&head, arr, sizeof(arr)/sizeof(arr[0]));
-    CHECK_RET_OP(ret, "Init with array");
-    LinkListLength(head, &listSize);
-    printf("List size:%d\n", listSize);
-    ret = Traverse(head, "InitLinkList with array", print_general_node_info);
-    CHECK_RET_OP(ret, "Init");
-
-    data = 4567;
-    ret = InsertAtTail(head, &data);
-    CHECK_RET_OP(ret, "insert:4567 at tail");
-    LinkListLength(head, &listSize);
-    printf("List size:%d\n", listSize);
-    ret = Traverse(head, "insert:4567 at tail", print_general_node_info);
-    CHECK_RET_OP(ret, "insert at tail");
-
-    data = 0;
-    ret = OrderInsert(&head, data, InOrderCompare);
-    CHECK_RET_OP(ret, "OrderInsert:0");
-    LinkListLength(head, &listSize);
-    printf("List size:%d\n", listSize);
-    ret = Traverse(head, "OrderInsert:0", print_general_node_info);
-    CHECK_RET_OP(ret, "OrderInsert:0");
-
-    data = 258;
-    ret = OrderInsert(&head, data, InOrderCompare);
-    CHECK_RET_OP(ret, "OrderInsert:258");
-    LinkListLength(head, &listSize);
-    printf("List size:%d\n", listSize);
-    ret = Traverse(head, "OrderInsert:258", print_general_node_info);
-    CHECK_RET_OP(ret, "OrderInsert:258");
-
-    data = 9999;
-    ret = OrderInsert(&head, data, InOrderCompare);
-    CHECK_RET_OP(ret, "OrderInsert:9999");
-    LinkListLength(head, &listSize);
-    printf("List size:%d\n", listSize);
-    ret = Traverse(head, "OrderInsert:9999", print_general_node_info);
-    CHECK_RET_OP(ret, "OrderInsert:9999");
-}
-
 void LinkListTest5(void)
 {
     printf("Linklist v4 test5\n");
@@ -815,7 +1098,6 @@ void LinkListTest5(void)
     CHECK_RET_OP(ret, "SwapNode");
     ret = Traverse(head, "SwapNode", print_general_node_info);
     CHECK_RET_OP(ret, "SwapNode");
-
 }
 
 void LinkListTest6(void)
@@ -871,7 +1153,7 @@ void LinkListTest6(void)
 
 void LinkListTest7(void)
 {
-    printf("Linklist v4 test3\n");
+    printf("Linklist v4 test\n");
     ElemType data, insertVal;
     Status ret;
     size_t listSize = 10;
@@ -895,6 +1177,8 @@ void LinkListTest7(void)
     ret = Traverse(head, "insert:4567 at tail", print_general_node_info);
     CHECK_RET_OP(ret, "insert at tail");
 
+    // TODO:
+    // sort linklist
     ret = BubbleSortLinkList(head, ReverseOrderCompare);
     CHECK_RET_OP(ret, "BubbleSortLinkList");
     LinkListLength(head, &listSize);
@@ -903,43 +1187,26 @@ void LinkListTest7(void)
     CHECK_RET_OP(ret, "BubbleSortLinkList");
 }
 
-#if 0
-
-void LinkListTest2()
+void LinkListTest8(void)
 {
-    LinkList pList; // Node * pList;
-    ElemType arr[5] = {5, 7, 22, 111, 3};
+    printf("Linklist test8\n");
+    ElemType data, insertVal;
+    Status ret;
+    size_t listSize = 10;
+    size_t index = 5;
+    Node *head;
+    ElemType arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1088};
+    position_t pos;
 
-    InitLinkListWithArray_L(&pList, arr, sizeof(arr)/sizeof(arr[0]));
-    printf("get address:%#p\n", pList);
-    printf("init:\r\n");
-    Traverse_L(pList);
-
-    Insert_L(pList, 22, 99);
-    printf("insert:99\r\n");
-    Traverse_L(pList);
-
-    Delete_L(pList, 111);
-    printf("delete:111\r\n");
-    Traverse_L(pList);
-
-//    printf("arg:%#p\n", pList);
-    Clear_L(pList);
-    printf("clear\r\n");
-    Traverse_L(pList);
-
-    InserHead_L(pList, 1234);
-    printf("insert head node:1234\r\n");
-    Traverse_L(pList);
-
-    InsertAtTail(pList, 4568);
-    printf("insert tail node:4568\r\n");
-    Traverse_L(pList);
-
-    Deinit_L(&pList);
-    printf("deinit\r\n");
-    Traverse_L(pList);
+    ret = InitLinkListWithArray(&head, arr, sizeof(arr)/sizeof(arr[0]));
+    CHECK_RET_OP(ret, "Init with array");
+    LinkListLength(head, &listSize);
+    printf("List size:%d\n", listSize);
+    ret = Traverse(head, "InitLinkList with array", print_general_node_info);
+    CHECK_RET_OP(ret, "Init");
 }
+
 #endif
+
 
 #endif

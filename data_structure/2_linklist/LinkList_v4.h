@@ -11,6 +11,7 @@
 #if defined(DataStructLinkListV4) && (DataStructLinkListV4 == 1)
 #include <time.h>
 
+// 多项式的计算
 #if defined(DATA_STRUCTURE_POLYNOMAIL) && (DATA_STRUCTURE_POLYNOMAIL == 1)
 typedef struct {
     float coef; // 系数
@@ -25,7 +26,7 @@ typedef struct {
 
 // typedef int ElemType;
 // typedef unsigned int size_t;
-#define ElemType    int
+// #define ElemType    int
 
 #ifndef ElemType
 #error "ElemType not defined"
@@ -33,6 +34,8 @@ typedef struct {
 // #define INVALID_VAL
 // #define INITIALIZE_ELEM(elem)   memset()
 #endif
+
+
 
 //链表
 typedef struct {
@@ -51,6 +54,7 @@ typedef enum {
 
 typedef int position_t; // 节点位置
 
+
 void struct_member_size_test(void);
 Status InitLinkList(LinkList *ll);
 Status InitLinkListWithArray(LinkList *L, ElemType *pArr, size_t len);
@@ -65,6 +69,18 @@ Status InsertAtFirst(LinkList L, ElemType *pVal);
 Status InsertAtTail(LinkList L, ElemType *pVal);
 Status DeleteElem(LinkList L, ElemType *pDeleteVal);
 Status DeleteByIdx(LinkList *L, size_t idx, ElemType *e);
+Status MakeNode(Node **pNode, ElemType nodeVal);
+Status FreeNode(Node **pNode);
+Status DelFirst(LinkList L, Node **pDelNode);
+Status Append(LinkList L, Node *pNew);
+Status RemoveTail(LinkList L, Node **pDelNode);
+Status InsertBefore(LinkList L, Node *p, Node *s);
+Status InsertAfter(LinkList L, Node *p, Node *s);
+Status SetCurrElem(LinkList L, Node *p, ElemType nodeNewVal);
+Status GetCurrElem(LinkList L, Node *p, ElemType *pNode);
+Status DeleteNode(LinkList L, Node **pDelete);
+bool ListEmpty(LinkList L);
+
 Status BubbleSortLinkList(LinkList L, compare_t pCompareFun);
 Status ClearLinkList(LinkList L);
 Status DeinitLinkList(LinkList *L);
@@ -75,6 +91,7 @@ void linklist_api_test4(void);
 void LinkListTest5(void);
 void LinkListTest6(void);
 void LinkListTest7(void);
+void LinkListTest8(void);
 
 #endif // DataStructLinkListV4
 

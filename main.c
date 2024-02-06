@@ -35,7 +35,8 @@ int main()
     // linklist_api_test4();    
     // LinkListTest5();
     // LinkListTest6();
-    LinkListTest7();
+    // LinkListTest7();
+    // LinkListTest8();
 #endif
 
 #if defined(STATIC_LINK_LIST_V1) && (STATIC_LINK_LIST_V1 == 1)
@@ -56,7 +57,8 @@ int main()
 #endif
 
 #if defined(DATA_STRUCTURE_POLYNOMAIL) && (DATA_STRUCTURE_POLYNOMAIL == 1)
-    PolynTest1();
+    // PolynTest1();
+    PolynTest2();
 #endif
 
 #if CACHE_TEST

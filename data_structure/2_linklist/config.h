@@ -17,11 +17,14 @@
 #define FALSE               0
 #define INVALID_VAL         0xFFFFFFFF
 
-#define CHECK_RET(ret)              \
-    if (ret != OK) {                \
-        printf("error:%d\n", ret);  \
-        exit(-1);                   \
-    }
+#define CHECK_RET(ret)                  \
+    do {                                \
+        if (ret != OK) {                \
+            printf("error:%d\n", ret);  \
+            exit(-1);                   \
+        }                               \
+    }                                   \
+    while (0)
 
 #define CHECK_RET_OP(ret, op)               \
     if (ret != OK) {                        \

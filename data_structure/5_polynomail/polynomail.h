@@ -28,12 +28,15 @@
 // } Node, *LinkList; // 链表数据类型
 
 typedef LinkList polynomial; // Node* type
-
+// #define polynomial LinkList;
 
 void PolynomailPrinfInfo(void *poly);
 Status CreatPolyn(polynomial *p, ElemType *pArr, int arrSize);
 Status DestroyPolyn(polynomial *p);
 int PolynLength(polynomial p);
+Status AddPolyV1(polynomial p1, polynomial p2);
+Status AddPolyV2(polynomial p1, polynomial p2);
+Status SubtractPolyn(polynomial p1, polynomial p2);
 
 void PolynTest1(void);
 void PolynTest2(void);

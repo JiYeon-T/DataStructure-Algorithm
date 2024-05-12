@@ -1,6 +1,8 @@
 #ifndef __STATIC_LINK_LIST_H__
 #define __STATIC_LINK_LIST_H__
-#include "config.h"
+
+#include "util.h"
+#include "build_config.h"
 
 
 // 静态链表(对于不支持指针的语言,可以使用静态链表)

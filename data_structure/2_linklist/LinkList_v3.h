@@ -1,6 +1,8 @@
 #ifndef LINKLIST_V3_H_INCLUDED
 #define LINKLIST_V_H_INCLUDED
-#include "config.h"
+
+#include "util.h"
+#include "build_config.h"
 
 // 没有头节点的单向链表
 

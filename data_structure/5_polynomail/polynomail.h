@@ -6,7 +6,10 @@
 // 使用链式存储结构,顺序存储结构对于指数差异较大时, 会有很多的 0 节点,浪费空间
 // 编译该文件需要 DATA_STRUCTURE_POLYNOMAIL == 1 && DataStructLinkListV4 == 1
 
-#include "config.h"
+/* NOTE: 每个文件中都必须包含的部分 */
+#include "util.h"
+#include "build_config.h"
+
 #if defined(DATA_STRUCTURE_POLYNOMAIL) && (DATA_STRUCTURE_POLYNOMAIL == 1)
 #if defined(DataStructLinkListV4) && (DataStructLinkListV4 == 1)
 #include "LinkList_v4.h"

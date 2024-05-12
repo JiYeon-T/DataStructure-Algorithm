@@ -1,7 +1,8 @@
 /**
  * @file Triplet.c
  * @author your name (you@domain.com)
- * @brief ͨ����������������Ԫ��ѧϰ���ݳ���
+ * @brief 三元组
+ *       严蔚敏 - <数据结构>
  * @version 0.1
  * @date 2021-12-09
  *
@@ -9,8 +10,6 @@
  *
  */
 #include "Triplet.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 /** �㷨:������, ȷ����, ������, ����, ��� **/
 
@@ -18,13 +17,14 @@
 Triplet* InitTripletWithElem(ElemType a, ElemType b, ElemType c)
 {
     Triplet *T = (Triplet*)malloc(sizeof(Triplet) * 1);
-    if(!T){
+    if (!T) {
         perror("malloc failed\n");
         return NULL;
     }
     T->data[0] = a;
     T->data[1] = b;
     T->data[2] = c;
+    
     return T;
 }
 
@@ -78,7 +78,7 @@ ElemType Min(Triplet *T)
            (T->data[1] <= T->data[2] ? T->data[1] : T->data[2]);
 }
 
-void TripletTest()
+void TripletTest(void)
 {
     Triplet *T; // ָ���ֵ���������������һ����ַ;
     int index = 2;
@@ -91,5 +91,5 @@ void TripletTest()
     printf("max:%d\t min:%d\n", Max(T), Min(T));
     DestroyTriplet(T);
 
-    printf("HELLO,WORLD.");
+    printf("HELLO,WORLD.\n");
 }

@@ -11,7 +11,8 @@
 #ifndef __DOUBLE_CIRCLE_LINKLIST_H__
 #define __DOUBLE_CIRCLE_LINKLIST_H__
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 双向循环链表
 // 除了保存头指针外, 还保存了尾指针,

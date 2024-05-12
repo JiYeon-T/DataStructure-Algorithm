@@ -2,9 +2,11 @@
 #define __LINEARLISTV2_H__
 #include <stdbool.h>
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
-// 仍然顺序存储链表, 只不过使用堆内存
+// 线性列表(顺序存储列表), 
+// 与 LinearList_v1 相比,只不过使用堆内存
 
 #if defined(DataStructLinearListV2) && (DataStructLinearListV2 == 1)
 
@@ -14,7 +16,6 @@
 // (1) ����(��ַ����);
 // (2) ��̬�����ڴ�, malloc(), ��ַҲ��������0  ;
 
-typedef int Status;
 typedef int ElemType;
 
 

@@ -413,14 +413,15 @@ void PolynTest2(void)
     // ret = Traverse(p1, "p1=p1+p2", print_poly_node_info);
     // CHECK_RET_OP(ret, "p1=p1+p2");
 
-    printf("polyn add:\r\n");
+    printf("polyn subtract:\r\n");
     ret = SubtractPolyn(p1, p2);
     CHECK_RET_OP(ret, "p1=p1+p2");
     ret = Traverse(p1, "p1=p1+p2", print_poly_node_info);
     CHECK_RET_OP(ret, "p1=p1+p2");
 
     printf("polyn multi:\r\n");
-    ret = SubtractPolyn(p1, p2);
+    //TODO:
+    // ret = MultiplyPolyn(p1, p2);
     CHECK_RET_OP(ret, "p1=p1+p2");
     ret = Traverse(p1, "p1=p1+p2", print_poly_node_info);
     CHECK_RET_OP(ret, "p1=p1+p2");

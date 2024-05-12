@@ -1,12 +1,14 @@
 #ifndef __STACK_V1_H__
 #define __STACK_V1_H__
 
+#include <stddef.h>
+
 // 顺序存储的栈
 
 typedef int Status;
 #define OK      1
 #define ERROR   0
-typedef unsigned int size_t;
+// typedef unsigned int size_t;
 typedef int ElemType;
 
 

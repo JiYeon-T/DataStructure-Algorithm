@@ -2,7 +2,8 @@
 #define __APP_LINKLIST_H__
 
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 链表的应用:
 // 一元多项式的操作;

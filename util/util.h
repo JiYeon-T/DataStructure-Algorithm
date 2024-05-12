@@ -1,21 +1,21 @@
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __UTIL_H__
+#define __UTIL_H__
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
-
-#include "build_config.h"
 /****************************************************************************
  * COMMON MACRO
  ****************************************************************************/
-#define OK                  0
-#define ERROR               -1
-#define TRUE                1
-#define FALSE               0
-#define INVALID_VAL         0xFFFFFFFF
+#define OK                  (0)
+#define ERROR               (-1)
+#define TRUE                (1)
+#define FALSE               (0)
+#define INVALID_VAL         (0xFFFFFFFF)
 
 #define CHECK_RET(ret)                  \
     do {                                \
@@ -39,11 +39,14 @@
     }
 
 
-// #define ASSERT(str)
+#define ASSERT(val)                 \
+    do {                            \
+        if (!(val)) {               \
+            printf("assert, %s:%d", __FILE__, __LINE__); \
+            exit(-1);               \
+        }                           \
+    } while (0)
+
 typedef int Status;
-
-
-
-
 
 #endif

@@ -1,7 +1,8 @@
 #ifndef __STATIC_LINK_LIST_H__
 #define __STATIC_LINK_LIST_H__
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 废弃
 

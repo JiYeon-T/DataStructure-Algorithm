@@ -1,17 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "util.h"
 #include "build_config.h"
 
 
+static void data_structure_test(void);
+static void algorithm_test(void);
+
 int main()
+{
+    data_structure_test();
+    algorithm_test();
+
+    return 0;
+}
+
+
+static void data_structure_test(void)
 {
 #if defined(DataStructADT) && (DataStructADT == 1)
     TripletTest();
 #endif
 
 #if defined(DataStructLinearListV1) && (DataStructLinearListV1 == 1)
-    LinearListV1Test();
+    // LinearListV1Test();
+    LinearListV1Test2();
 #endif
 
 
@@ -68,6 +82,9 @@ int main()
 #if APP_LINKLIST
 #endif
 
+}
 
-    return 0;
+static void algorithm_test(void)
+{
+    
 }

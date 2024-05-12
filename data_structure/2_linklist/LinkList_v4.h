@@ -2,7 +2,8 @@
 #define LINKLIST_V4_H_INCLUDED
 
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 有头节点的单向链表
 // 定义通用的 ElemType 类型, 以及 ElemType 的遍历方法, 用于 ElemType 是结构体之类的其他链表使用

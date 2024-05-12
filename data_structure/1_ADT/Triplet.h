@@ -1,22 +1,18 @@
 #ifndef __TRIPLET_H__
 #define __TRIPLET_H__
 
+/* NOTE: 每个文件中都必须包含的部分 */
+#include "util.h"
+#include "build_config.h"
 
-// �궨��ĳ���
-#define TRUE    1
-#define FALSE   0
-#define OK      1
-#define ERROR   0
+
 #define INFEASIBLE  -1
 #define OVERFLOW    -2
 
-// ����
-typedef int Status;
 typedef int ElemType;
 
 // class type
-typedef struct Triplet
-{
+typedef struct Triplet {
     /* data */
     ElemType data[3];
 } Triplet;
@@ -31,6 +27,6 @@ Status IsDescending(Triplet *T);
 ElemType Max(Triplet *T);
 ElemType Min(Triplet *T);
 
-void TripletTest();
+void TripletTest(void);
 
 #endif // end __TRIPLET_H__

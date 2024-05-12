@@ -2,7 +2,8 @@
 #define LINKLIST_V2_H_INCLUDED
 
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 有头节点的单向链表
 // :增 删 改 查

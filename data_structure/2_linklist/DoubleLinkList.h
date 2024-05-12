@@ -11,7 +11,8 @@
 #ifndef __DOUBLE_LINK_LIST_H__
 #define __DOUBLE_LINK_LIST_H__
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 双向链表
 

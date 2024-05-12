@@ -19,4 +19,22 @@ Talk is cheap, show me the code.-Linus Towards
 
 ##### 2. 通过时间戳计算公历时间的计算算法，肯定可以优化
 
-##### 3. exit
+
+##### 2. 项目编译 & 运行方法:
+```shell
+./build.sh
+./build/data_structure_algorithm_test
+```
+
+
+
+##### 3. 添加一个测试的方法:
+step1: 创建源文件以及头文件;
+step2: CMakeLists.txt 中添加源文件, 以及路径;
+```CMakeLists
+file(GLOB SRC_LIST xxx.c)
+include_directories( xxx_path)
+```
+
+step3: build.config.h.in 中打开宏;
+

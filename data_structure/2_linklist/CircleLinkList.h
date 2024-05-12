@@ -11,7 +11,8 @@
 #ifndef __CIRCLE_LINK_LIST_H__
 #define __CIRCLE_LINK_LIST_H__
 
-#include "config.h"
+#include "util.h"
+#include "build_config.h"
 
 // 循环表(单向链表, 包含头节点)
 // 最后一个节点的指针域指向头节点

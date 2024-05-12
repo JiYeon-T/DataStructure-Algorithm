@@ -1,6 +1,9 @@
-// 编译选项, build_config.h 由 build_config.h.in 自动生成, 不可修改
-
-
+/**
+ * @brief PROJECT CONFIGURATION FILE
+ * 
+ * @note 编译选项, build_config.h 由 build_config.h.in 自动生成, 不可修改
+ * 
+*/
 /****************************************************************************
  * DATA STRUCTURE CONFIG
  ****************************************************************************/
@@ -9,13 +12,13 @@
 #define DataStructLinearListV2           0
 #define DataStructLinkListV2             0
 #define DataStructLinkListV3             0
-#define DataStructLinkListV4             1
+#define DataStructLinkListV4             0
 #define STATIC_LINK_LIST_V1              0
 #define CIRCLE_LINK_LIST                 0
 #define DataStructDoubleLinkListV1       0
 #define DOUBLE_CIRCLE_LINKLIST           0
 
-#define DATA_STRUCTURE_POLYNOMAIL        1
+#define DATA_STRUCTURE_POLYNOMAIL        0
 #define DataStructRingBuffer             0
 #define DataStructList                   0
 #define DataStructPolynomail             0

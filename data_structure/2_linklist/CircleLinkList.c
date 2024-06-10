@@ -2,7 +2,7 @@
  * @file CircleLinkList.c
  * @author your name (you@domain.com)
  * @brief 首尾相连的链表, 循环终止条件变成了判断 temp->next!=head, 是否为头指针
- *        (1) 如果不适用头节点, 就需要使用 尾指针来保存 尾巴位置信息
+ *        (1) 如果不使用头节点, 就需要使用 尾指针来保存 尾巴位置信息
  * @version 0.1
  * @date 2022-03-16
  *

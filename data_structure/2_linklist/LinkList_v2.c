@@ -6,7 +6,7 @@
 #if defined(DataStructLinkListV2) && (DataStructLinkListV2 == 1)
 
 /**
- * @brief initialize a empty linklist, only a head node
+ * @brief initialize a empty linklist, only have a head node
  *
  * @param L struct Node **L, 头指针, 初始化一个头指针指向头节点(头节点不保存数据)
  *          传入一个指向头节点的指针, 初始化后, 将该指针改为指向头节点(值为头节点的地址)
@@ -20,6 +20,7 @@ Status InitLinkList(LinkList *L)
 
     Node *pTemp = (Node*)malloc(sizeof(Node) * 1);
     if (!pTemp) {
+        LOG_E("malloc failed");
         return ERROR;
     }
     pTemp->data = INVALID_VAL;
@@ -31,7 +32,7 @@ Status InitLinkList(LinkList *L)
 }
 
 /**
- * @fun: init linklist with index, 头插法初始化链表
+ * @fun: init linklist with size, 头插法初始化链表
  *
  * @param[in]  L pointer to head node
  * @param[in]  size
@@ -102,7 +103,7 @@ LinkList InitTailInsert(size_t size)
  **/
 Status InitLinkListWithArray(LinkList *L, ElemType *pArr, size_t len)
 {
-    if(!L || !pArr || !len){
+    if (!L || !pArr || !len) {
         fprintf(stderr, "null ptr\n");
         return ERROR;
     }
@@ -110,15 +111,14 @@ Status InitLinkListWithArray(LinkList *L, ElemType *pArr, size_t len)
     // initialize head node
     Node *pHead = (Node*)malloc(sizeof(Node) * 1);
     printf("malloc address:%#p\n", pHead);
-    if(!pHead)
+    if (!pHead)
         return ERROR;
     pHead->data = INVALID_VAL;
     pHead->next = NULL;
-    *L = pHead;  // 头指针指向头结点, 保存地址; LinkList = struct Node *
     // LinkList *L;  // struct Node **L; // 解引用一层变成 Node * 类型
 
     // other node, tail insert
-    Node *pTail = pHead; // 尾指针
+    Node *pTail = pHead; // 尾指针, 尾插法需要尾指针
     for (int ix = 0; ix < len; ++ix) {
         Node *pNew = (Node*)malloc(sizeof(Node) * 1);
         if(!pNew)
@@ -135,6 +135,8 @@ Status InitLinkListWithArray(LinkList *L, ElemType *pArr, size_t len)
         pTail = pNew;
     }
 
+    *L = pHead;  // 头指针指向头结点, 保存地址; LinkList = struct Node *
+
     return OK;
 
 EXIT:
@@ -146,14 +148,401 @@ EXIT:
 }
 
 /**
-* @fun: traverse linklist
-* @param[in] head pointer to head node
-* @ret Status
+* @fun: free heap memory(include head node)
+* @param[in]  L pointer to head node
+* @retval Status
 */
+Status DestroyLinkList(LinkList *L)
+{
+    Node *pTemp = *L; // Node* type
+    Node *pFree = NULL;
+
+    while(pTemp != NULL){
+        pFree = pTemp;
+        pTemp = pTemp->next;
+        free(pFree);
+    }
+
+    *L = NULL;
+
+    return OK;
+}
+
+/**
+* @fun: clear linklist,
+*       does not delte head node, becomde a empty linklist
+*
+* @param[in]  L pointer to head node
+* @retval Status
+*/
+Status ClearLinkList(LinkList L)
+{
+    // printf("param:%#p\n", L);
+    // printf("head node, pinter:%#p data area:%ld\r\n", (*L).next, (*L).data);
+    // printf("INT_MAX:%ld\r\n", INT_MAX);
+
+    Node *pTemp = L->next; // first node, Node *pFirstNode = L->next;
+    Node *pFree = NULL;
+
+    while(pTemp != NULL){
+        pFree = pTemp;
+        pTemp = pTemp->next;
+        free(pFree);
+        pFree = NULL; // 释放内存并且修改为 NULL, 要不然下次遍历会出问题
+    }
+
+    L->next = NULL; // include a head node
+
+    return OK;
+}
+
+/**
+ * @brief List is empty ?
+ *
+ * @param[in] L
+ * @return true/false
+*/
+bool ListEmpty(const LinkList L)
+{
+    if (!L) {
+        LOG_E("empty");
+        return true;
+    }
+    Node *temp = L->next;
+
+    // 第一个节点为空, 则肯定是空链表, 否则不是
+    return temp == NULL ? true : false;
+}
+
+/**
+ * @brief List item number
+ * 
+ * @param[in] L
+ * @return
+*/
+size_t ListLength(const LinkList L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return 0;
+    }
+
+    Node *temp = L->next;
+    size_t cnt = 0;
+
+    while (temp) {
+        ++cnt;
+        temp = temp->next;
+    }
+
+    return cnt;
+}
+
+
+/**
+ * @brief get linklist element
+ *
+ * @param[in]  L pointer to head node
+ * @param[in]  i index start from 1
+ * @param[out] e save value of index ix
+ * @return
+ */
+Status GetElem(const LinkList L, int i, ElemType *e)
+{
+    if (!L || !e) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+    Node *p_temp = L->next; // head node
+    int j = 1; // start from 1
+
+    while (p_temp && j < i) {
+        p_temp = p_temp->next;
+        ++j;
+    }
+
+    if (!p_temp || j > i) {
+        LOG_E("can't get this node idx:%d", i);
+        return ERROR;
+    }
+    *e = p_temp->data;
+    // copy_data_fidld(e, p_temp->data);
+
+    return OK;
+}
+
+/**
+ * @brief Locate Elem
+ * 
+ * @param[in] L
+ * @param[in] e
+ * @param[in] compare compare function
+ * @return success, return item index(start from 1), otherwise return 0(fail)
+*/
+size_t LocateElem(const LinkList L, ElemType e, bool (*compare)(ElemType, ElemType))
+{
+    if (!L || !compare) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    Node *temp = L->next;
+    size_t idx = 0;
+
+    while (temp) {
+        ++idx;
+        if (compare(e, temp->data))
+            return idx;
+        temp = temp->next;
+    }
+
+    if (!temp) {
+        LOG_E("can't find this node data:%d", e);
+        return 0;
+    }
+
+    return idx;
+}
+
+/**
+ * @brief previous Element
+ * Time Complexity:O(n)
+ *
+ * @param[in] L
+ * @param[in] cur_e current element
+ * @param[out] prev_e next element data part
+ * @return success, return OK, otherwise return ERROR
+*/
+Status PriorElem(const LinkList L, ElemType cur_e, ElemType *prev_e)
+{
+    if (!L || !prev_e) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+    
+    Node *temp = L->next;
+    Node *prev = NULL;
+
+    // if (temp->data == cur_e) {
+    //     LOG_E("first node does not have previous element");
+    //     return ERROR;
+    // }
+
+    while (temp) {
+        if (temp->data == cur_e)
+            break;
+        prev = temp;
+        temp = temp->next;
+    }
+
+    // can't find cur_e
+    if (!temp) {
+        LOG_E("can't get this node val:%d", cur_e);
+        return ERROR;
+    }
+    //prev == NULL, 第一个节点没有前驱节点
+    if (!prev) {
+        LOG_E("First node does not have previous node, node val:%d", cur_e);
+        return ERROR;
+    }
+
+    *prev_e = prev->data;
+
+    return OK;
+}
+
+/**
+ * @brief next Element
+ * Time Complexity:O(n)
+ * 
+ * @param[in] L
+ * @param[in] cur_e current element
+ * @param[out] next_e previous element data part
+ * @return success, return OK, otherwise return ERROR
+*/
+Status NextElem(const LinkList L, ElemType cur_e, ElemType *next_e)
+{
+    if (!L || !next_e) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+    
+    Node *temp = L->next;
+    Node *next;
+
+    while (temp) {
+        if (temp->data == cur_e)
+            break;
+        temp = temp->next;
+    }
+
+    // can't find cur_e
+    if (!temp) {
+        LOG_E("can't get this node val:%d", cur_e);
+        return ERROR;
+    }
+
+    //next == NULL, 最后一个节点没有后继节点
+    next = temp->next;
+    if (!next) {
+        LOG_E("Last node does not have next node, node val:%d", cur_e);
+        return ERROR;
+    }
+
+    *next_e = next->data;
+
+    return OK;
+}
+
+
+/**
+ * @brief insert
+ * Time Complexity:O(n)
+ * 
+ * @param[in] L 
+ * @param[in] idx insert a element before idxth element, start from 1, 1 <= idx <= (ListLength(L) + 1),
+ * @param[in] e data
+ * @return success, return OK, otherwise return ERROR
+*/
+Status ListInsert(LinkList L, size_t idx, ElemType e)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    if (idx < 1 || idx > (ListLength(L) + 1)) {
+        LOG_E("invalid idx");
+        return ERROR;
+    }
+
+    Node *temp = L->next;
+    Node *prev = L;
+    size_t cur_idx = 1; //start from 1
+
+    while (temp) {
+        if (cur_idx == idx)
+            break;
+        prev = temp;
+        temp = temp->next;
+    }
+
+    // insert at tail
+    if (idx == (ListLength(L) + 1)) {
+        Node *p_insert = (Node*)malloc(sizeof(Node));
+        if (!p_insert) {
+            LOG_E("malloc failed");
+            return ERROR;
+        }
+        p_insert->data = e;
+        p_insert->next = NULL;
+        prev->next = p_insert;
+
+        return OK;
+    }
+
+    if (!temp || cur_idx > idx) {
+        LOG_E("can't find a match node idx:%d", idx);
+        return ERROR;
+    }
+
+    Node *p_insert = (Node*)malloc(sizeof(Node));
+    if (!p_insert) {
+        LOG_E("malloc failed");
+        return ERROR;
+    }
+    p_insert->data = e;
+    p_insert->next = temp;
+    prev->next = p_insert;
+
+    return OK;
+}
+
+/**
+ * @brief delete
+ * Time Complexity:O(n)
+ * 
+ * @param[in] L 
+ * @param[in] idx delete a element idxth element, start from 1, 1 <= idx <= (ListLength(L) + 1),
+ * @param[out] e deleted node value
+ * @return success, return OK, otherwise return ERROR
+*/
+Status ListDelete(LinkList L, size_t idx, ElemType *e)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    if (idx < 1 || idx > ListLength(L)) {
+        LOG_E("invalid idx");
+        return ERROR;
+    }
+
+    Node *temp = L->next;
+    Node *prev = L;
+    size_t cur_idx = 1; //start from 1
+
+    while (temp) {
+        // LOG_D("idx:%d data:%d", idx, temp->data);
+        if (cur_idx == idx)
+            break;
+        prev = temp;
+        temp = temp->next;
+        ++cur_idx;
+    }
+
+    if (!temp || cur_idx > idx) {
+        LOG_E("can't find a match node, idx:%d", idx);
+        return ERROR;
+    }
+
+    *e = temp->data;
+    prev->next = temp->next; // delete ndoe
+    free(temp);
+
+    return OK;
+}
+
+/**
+ * @brief traverse linklist
+ *
+ * @param[in] head pointer to head node
+ * @param[in] p_visit
+ * @return Status
+ */
+Status ListTraverse(const LinkList L, void (*p_visit)(ElemType e))
+{
+    if (!L || !p_visit) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    Node *p_curr = L->next;
+    size_t idx = 1; // start from 1
+
+    LOG_D("traverse:");
+
+    while (p_curr) {
+        printf("[%d]:", idx++);
+        p_visit(p_curr->data);
+        p_curr = p_curr->next;
+    }
+    printf("\n");
+
+    return OK;
+}
+
+/**
+ * @brief traverse linklist
+ *
+ * @param[in] head pointer to head node
+ * @ret Status
+ */
 Status Traverse(const LinkList L, char *p_op_info)
 {
-    if (L == NULL) {
-        fprintf(stderr, "null ptr\n");
+    if (!L) {
+        LOG_E("null ptr\n");
         return ERROR;
     }
     size_t idx = 0;
@@ -169,33 +558,6 @@ Status Traverse(const LinkList L, char *p_op_info)
     return OK;
 }
 
-/**
-* @fun: get linklist element
-* @param[in]  L pointer to head node
-* @param[in]  i index start from 0
-* @param[out] e save value of index ix
-*/
-Status GetElem(const LinkList L, int i, ElemType *e)
-{
-    if (!L) {
-        return ERROR;
-    }
-    Node *p_temp = L->next; // head node
-    int j = 0;
-
-    while (p_temp && j < i) {
-        p_temp = p_temp->next;
-        ++j;
-    }
-
-    if (!p_temp || j > i) {
-        return ERROR;
-    }
-    *e = p_temp->data;
-    // copy_data_fidld(e, p_temp->data);
-
-    return OK;
-}
 
 /**
 * @fun: Insert a number
@@ -432,55 +794,6 @@ Status DeleteByIdx(LinkList *L, size_t idx, ElemType *e)
 }
 
 /**
-* @fun: free heap memory(include head node)
-* @param[in]  L pointer to head node
-* @retval Status
-*/
-Status DeinitLinkList(LinkList *L)
-{
-    Node *pTemp = *L; // Node* type
-    Node *pFree = NULL;
-
-    while(pTemp != NULL){
-        pFree = pTemp;
-        pTemp = pTemp->next;
-        free(pFree);
-    }
-
-    *L = NULL;
-
-    return OK;
-}
-
-/**
-* @fun: clear linklist,
-*       does not delte head node, becomde a empty linklist
-*
-* @param[in]  L pointer to head node
-* @retval Status
-*/
-Status ClearLinkList(LinkList L)
-{
-    // printf("param:%#p\n", L);
-    // printf("head node, pinter:%#p data area:%ld\r\n", (*L).next, (*L).data);
-    // printf("INT_MAX:%ld\r\n", INT_MAX);
-
-    Node *pTemp = L->next; // first node, Node *pFirstNode = L->next;
-    Node *pFree = NULL;
-
-    while(pTemp != NULL){
-        pFree = pTemp;
-        pTemp = pTemp->next;
-        free(pFree);
-        pFree = NULL; // 释放内存并且修改为 NULL, 要不然下次遍历会出问题
-    }
-
-    L->next = NULL; // include a head node
-
-    return OK;
-}
-
-/**
  * @fun: merge 2 sorted linklist, L1, L2 是两个有序链表
  *       归并排序 从小到大
  *       创建新节点然后插入
@@ -649,6 +962,138 @@ void linklist_api_test(void)
     CHECK_RET_OP(ret, "clear linklist");
     ret = Traverse(head, "clear");
     CHECK_RET_OP(ret, "clear");
+}
+
+static bool compare_elem(ElemType e1, ElemType e2)
+{
+    return (e1 == e2);
+}
+
+static void visit_elem(ElemType e)
+{
+    printf("%d  ", e);
+}
+
+void linklist_api_test2(void)
+{
+    LinkList p_head; // head pointer
+    Status ret;
+    ElemType elem_data;
+    size_t idx;
+
+    ret = InitLinkList(&p_head);
+    CHECK_RET(ret);
+    ret = ListTraverse(p_head, visit_elem);
+    CHECK_RET(ret);
+
+    LOG_D("empty:%d  length:%d", ListEmpty(p_head), ListLength(p_head));
+    
+    //fail case
+    // ret = GetElem(p_head, 1, &elem_data);
+    // CHECK_RET(ret);
+    // ret = PriorElem(p_head, 1, &elem_data);
+    // CHECK_RET(ret);
+    // ret = NextElem(p_head, 1, &elem_data);
+    // CHECK_RET(ret);
+    // ret = ListInsert(p_head, 2, 100);
+    // CHECK_RET(ret);
+    // ret = ListDelete(p_head, 1, &elem_data);
+    // CHECK_RET(ret);
+
+    ret = ListInsert(p_head, 1, 100);
+    CHECK_RET(ret);
+    ret = ListInsert(p_head, 1, 200);
+    CHECK_RET(ret);
+    ret = ListInsert(p_head, 1, 300);
+    CHECK_RET(ret);
+    ret = ListInsert(p_head, 1, 400);
+    CHECK_RET(ret);
+    ret = ListInsert(p_head, 1, 500);
+    CHECK_RET(ret);
+    ret = ListInsert(p_head, 1, 600);
+    CHECK_RET(ret);
+    LOG_D("empty:%d  length:%d", ListEmpty(p_head), ListLength(p_head));
+    ret = ListTraverse(p_head, visit_elem);
+    CHECK_RET(ret);
+
+    idx = 1;
+    ret = GetElem(p_head, idx, &elem_data);
+    CHECK_RET(ret);
+    LOG_D("[%d] = %d", idx, elem_data);
+    idx = 6;
+    ret = GetElem(p_head, idx, &elem_data);
+    CHECK_RET(ret);
+    LOG_D("[%d] = %d", idx, elem_data);
+
+    // fail case
+    // idx = 7;
+    // ret = GetElem(p_head, 7, &elem_data);
+    // CHECK_RET(ret);
+    // LOG_D("[%d] = %d", idx, elem_data);
+
+    elem_data = 500;
+    idx = LocateElem(p_head, elem_data, compare_elem);
+    LOG_D("data:%d result:%d %s", elem_data, idx, idx == 0 ? "fail" : "success");
+    elem_data = 1000;
+    idx = LocateElem(p_head, elem_data, compare_elem);
+    LOG_D("data:%d result:%d %s", elem_data, idx, idx == 0 ? "fail" : "success");
+
+    ret = PriorElem(p_head, 100, &elem_data);
+    CHECK_RET(ret);
+    LOG_D("data before 100:%d", elem_data);
+    //fail case
+    // ret = PriorElem(p_head, 1000, &elem_data);
+    // CHECK_RET(ret);
+    // LOG_D("data before 1000:%d", elem_data);
+    // ret = PriorElem(p_head, 600, &elem_data);
+    // CHECK_RET(ret);
+    // LOG_D("data before 600:%d", elem_data);
+
+    // //fail case
+    // ret = NextElem(p_head, 100, &elem_data);
+    // CHECK_RET(ret);
+    // LOG_D("data next 100:%d", elem_data);
+    // ret = NextElem(p_head, 1000, &elem_data);
+    // CHECK_RET(ret);
+    // LOG_D("data next 1000:%d", elem_data);
+    ret = NextElem(p_head, 600, &elem_data);
+    CHECK_RET(ret);
+    LOG_D("data next 600:%d", elem_data);
+
+    idx = 1;
+    ret = ListDelete(p_head, idx, &elem_data);    
+    CHECK_RET(ret);
+    LOG_D("delete idx:%d data:%d", idx, elem_data);
+    LOG_D("empty:%d  length:%d", ListEmpty(p_head), ListLength(p_head));
+    ret = ListTraverse(p_head, visit_elem);
+    CHECK_RET(ret);
+
+    // fail case
+    // idx = 100;
+    // ret = ListDelete(p_head, idx, &elem_data);    
+    // CHECK_RET(ret);
+    // LOG_D("delete idx:%d data:%d", idx, elem_data);
+    // LOG_D("empty:%d  length:%d", ListEmpty(p_head), ListLength(p_head));
+    // ret = ListTraverse(p_head, visit_elem);
+    // CHECK_RET(ret);
+
+    idx = 5;
+    ret = ListDelete(p_head, idx, &elem_data);    
+    CHECK_RET(ret);
+    LOG_D("delete idx:%d data:%d", idx, elem_data);
+    LOG_D("empty:%d  length:%d", ListEmpty(p_head), ListLength(p_head));
+    ret = ListTraverse(p_head, visit_elem);
+    CHECK_RET(ret);
+
+    ret = ClearLinkList(p_head);
+    CHECK_RET(ret);
+    ret = ListTraverse(p_head, visit_elem);
+    CHECK_RET(ret);
+
+    ret = DestroyLinkList(&p_head);
+    CHECK_RET(ret);
+    ret = ListTraverse(p_head, visit_elem);
+    CHECK_RET(ret);
 }
 
 void LinkListTest2()

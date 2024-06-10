@@ -8,6 +8,9 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
+
+#include "log.h"
 /****************************************************************************
  * COMMON MACRO
  ****************************************************************************/
@@ -15,7 +18,7 @@
 #define ERROR               (-1)
 #define TRUE                (1)
 #define FALSE               (0)
-#define INVALID_VAL         (0xFFFFFFFF)
+#define INVALID_VAL         (INT_MAX)
 
 #define CHECK_RET(ret)                  \
     do {                                \
@@ -26,9 +29,11 @@
     }                                   \
     while (0)
 
-#define CHECK_RET_OP(ret, op)               \
+//TODO:
+//使用可变参数的宏
+#define CHECK_RET_OP(ret, hint)             \
     if (ret != OK) {                        \
-        printf("op:%s ret:%d\n", op, ret);  \
+        printf("op:%s ret:%d\n", hint, ret);\
         exit(-1);                           \
     }
 
@@ -48,5 +53,8 @@
     } while (0)
 
 typedef int Status;
+
+#define SWAP(a, b)  { ElemType temp = (a); (a) = (b); (b) = temp; }
+
 
 #endif

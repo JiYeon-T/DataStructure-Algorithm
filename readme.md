@@ -1,4 +1,8 @@
 TODO:
+循环链表: P35
+https://baike.baidu.com/item/%E8%B7%B3%E8%A1%A8/22819833?fr=ge_ala
+
+
 1. 创建一个基于文件实现的相对比较稳定的存储机制, kvdb, 
 功能:通过 key 进行增删改查的操作;
 原理:文件中进行存储
@@ -20,7 +24,7 @@ Talk is cheap, show me the code.-Linus Towards
 ##### 2. 通过时间戳计算公历时间的计算算法，肯定可以优化
 
 
-##### 2. 项目编译 & 运行方法:
+##### 2. build & run:
 ```shell
 ./build.sh
 ./build/data_structure_algorithm_test
@@ -28,13 +32,18 @@ Talk is cheap, show me the code.-Linus Towards
 
 
 
-##### 3. 添加一个测试的方法:
-step1: 创建源文件以及头文件;
-step2: CMakeLists.txt 中添加源文件, 以及路径;
+##### 3. add a data structure method:
+step1: 
+创建源文件以及头文件;
+step2:
+CMakeLists.txt 中添加源文件, 以及路径;
 ```CMakeLists
 file(GLOB SRC_LIST xxx.c)
 include_directories( xxx_path)
 ```
 
-step3: build.config.h.in 中打开宏;
-
+step3:
+build.config.h.in 中打开宏, 会自动生成对应的头文件 build_config.h;
+```C
+#define DataStructADT                    1
+```

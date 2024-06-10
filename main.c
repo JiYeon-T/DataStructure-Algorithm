@@ -10,6 +10,12 @@ static void algorithm_test(void);
 
 int main()
 {
+
+#if 0 // util test
+    log_test();
+    exit(0);
+#endif
+
     data_structure_test();
     algorithm_test();
 
@@ -19,6 +25,7 @@ int main()
 
 static void data_structure_test(void)
 {
+
 #if defined(DataStructADT) && (DataStructADT == 1)
     TripletTest();
 #endif
@@ -30,17 +37,19 @@ static void data_structure_test(void)
 
 
 #if defined(DataStructLinearListV2) && (DataStructLinearListV2 == 1)
-    LinearListTest_L();
+    // LinearListV2Test();
+    LinearListV2Test2();
 #endif
 
 #if defined(DataStructLinkListV2) && (DataStructLinkListV2 == 1)
     // linklist_api_test();
-    // linklist_api_test_v2();
-    LinkListTest3();
+    linklist_api_test2();
+    // LinkListTest3();
 #endif
 
 #if defined(DataStructLinkListV3) && (DataStructLinkListV3 == 1)
-    linklist_api_test_v3();
+    // linklist_api_test();
+    linklist_api_test2();
 #endif
 
 #if defined(DataStructLinkListV4) && (DataStructLinkListV4 == 1)
@@ -57,13 +66,13 @@ static void data_structure_test(void)
     static_link_list_test();
 #endif
 
-#if defined(DataStructDoubleLinkListV1) && (DataStructDoubleLinkListV1 == 1)
-    DoubleListTest();
-#endif
-
-#if CIRCLE_LINK_LIST
+#if defined(DataStructCircleLinkList) && (DataStructCircleLinkList == 1)
     // test_CL();
     CircleLinkListTestV2();
+#endif
+
+#if defined(DataStructDoubleLinkListV1) && (DataStructDoubleLinkListV1 == 1)
+    DoubleListTest();
 #endif
 
 #if defined(DOUBLE_CIRCLE_LINKLIST) && (DOUBLE_CIRCLE_LINKLIST == 1)

@@ -13,3 +13,17 @@
 // 2. 所有的临界值都可以正常处理;
 // 3. 任意输入都可以正常输入;
 
+
+
+
+// TODO:
+// 使用链表对数据进行管理测试
+// typedef struct _node {
+//     Node node;
+//     int len;
+//     int *p_data;
+// } node_t;
+
+
+//TODO: 2
+// 翻转链表;

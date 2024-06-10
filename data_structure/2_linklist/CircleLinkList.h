@@ -14,10 +14,12 @@
 #include "util.h"
 #include "build_config.h"
 
-// 循环表(单向链表, 包含头节点)
+// 循环表(单向链表, 有头节点)
 // 最后一个节点的指针域指向头节点
+//逻辑简洁明了
 
-#if defined(CIRCLE_LINK_LIST) && (CIRCLE_LINK_LIST == 1)
+
+#if defined(DataStructCircleLinkList) && (DataStructCircleLinkList == 1)
 
 typedef int ElemType;
 

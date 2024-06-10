@@ -6,10 +6,13 @@
 #include "build_config.h"
 
 // 线性列表(顺序存储列表), 
-// 与 LinearList_v1 相比,只不过使用堆内存
+// 与 LinearList_v1 相比,只不过使用动态分配内存(堆内存)
 
 #if defined(DataStructLinearListV2) && (DataStructLinearListV2 == 1)
 
+#define DEFAULT_LIST_SIZE       (20)
+#define LIST_INCREMENT_SIZE     (20)
+#define OVERFLOW                (-1)
 
 // ���Ա���˳��洢��ʽ, ˳��洢�����Ա�(˳���)
 // ʵ�ַ���:
@@ -20,36 +23,34 @@ typedef int ElemType;
 
 
 typedef struct{
-//    ElemType elem[ElemSize];
     ElemType *elem;
-    // Ҳ����ʹ�ö��ڴ�, Ҳ��������: ElemType *elem;
-    int curLength; // ��ǰʹ�ó���
-    int listSize; // ��ǰ������ܴ�С, ��λ:sizeof(ElemType)
-} LList;
+    int curLength; // 当前  
+    int listSize; // 总容量
+} SqList;
 
-// ����һ������ָ��, ������λԪ��
-// ĳ����Ԫ��, ����ĳһ�ֹ�ϵ��λ��
-typedef bool (*pCompare)(ElemType a, ElemType b);
 
-Status InitList_L(LList *L);
-Status DestroyList_L(LList *L);
-Status CLearList_L(LList *L);
-bool ListIsEmpty_L(const LList *L);
-size_t ListLength_L(const LList *L);
-Status GetElem_LL(const LList *L, size_t idx, ElemType *val);
-Status SetElem_L(LList *L, size_t idx, ElemType val);
-size_t LocateElem_L(const LList *L, ElemType e, pCompare fun);
-Status PriorElem_L(const LList *L, ElemType cur, ElemType *prior);
-Status NextElem_L(const LList *L, ElemType cur, ElemType *next);
-Status ListInsert_L(LList *L, size_t idx, ElemType val);
-Status ListDelete_L(LList *L, size_t idx, ElemType *val);
-Status ListTraverse_L(const LList *L);
+Status InitList(SqList *L);
+Status DestroyList(SqList *L);
+Status ClearList(SqList *L);
+bool ListEmpty(const SqList *L);
+size_t ListLength(const SqList *L);
+Status GetElem(const SqList *L, int i, ElemType *e);
+Status SetElem(SqList *L, int i, ElemType e);
+Status PutElem(SqList *L, ElemType e);
+int LocateElem(const SqList *L, ElemType e, 
+                bool (*comp_fun)(ElemType val1, ElemType val2));
+Status PriorElem(const SqList *L, ElemType cur_e, ElemType *prev_e);
+Status NextElem(const SqList *L, ElemType cur_e, ElemType *next_e);
+Status ListInsert(SqList *L, int i, ElemType e);
+Status ListDelete(SqList *L, int i, ElemType *e);
+Status ListTraverse(SqList *L, void (*visit_fun)(ElemType e));
 
-Status ListSort_L(LList *L);
-Status UnionList_L(const LList *L1, const LList *L2);
-void MergeList_L(const LList *L1, const LList *L2);
+Status ListBubbleSort(SqList *L);
+Status UnionList(SqList *La, SqList *Lb);
+Status MergeList(const SqList *La, const SqList *Lb, SqList **Lc);
 
-void LinearListTest_L();
+void LinearListV2Test(void);
+void LinearListV2Test2(void);
 
 
 #endif // LINEARLIST_H_INCLUDED

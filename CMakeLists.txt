@@ -12,7 +12,8 @@ configure_file(build_config.h.in build_config.h)
 
 # 设置编译选项
 # set_build_option()
-set(CMAKE_C_FLAGS -g)
+set(CMAKE_C_FLAGS -g) # debug
+# set(CMAKE_C_FLAGS -w) # ignore warning
 message("CMAKE_C_FLAGS:" ${CMAKE_C_FLAGS})
 # set(CMAKE_CXX_FLAGS -g)
 # message("CMAKE_CXX_FLAGS:" ${CMAKE_CXX_FLAGS})
@@ -50,7 +51,7 @@ add_executable(
     ${SRC_LIST}
 )
 
-# 配置文件头文件目录添加
+# 配置文件头文件目录添加 build_config.h
 target_include_directories(
     ${PROJECT_NAME}_test
     PUBLIC

@@ -24,6 +24,7 @@
         "linearlistv2.h": "c",
         "stdbool.h": "c",
         "linklist_v4.h": "c",
-        "util.h": "c"
+        "util.h": "c",
+        "log.h": "c"
     }
 }

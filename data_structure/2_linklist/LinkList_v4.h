@@ -7,7 +7,26 @@
 
 // 有头节点的单向链表
 // 定义通用的 ElemType 类型, 以及 ElemType 的遍历方法, 用于 ElemType 是结构体之类的其他链表使用
-// TODO:
+//TODO:
+// 定义通用 ElemType 的两种方式:
+// 法1. 定义指针包含到 struct Node 数据结构中
+struct {
+    struct Node *next;
+    void *p_data; // 数据域部分
+    int len;
+} Node;
+// 数据域使用 void * 类型的指针, 而不是下面的这种方式
+// 法2:
+// 更通用的方法, 直接将链表节点包含到数据结构中, 通过 container_of() 获取结构体
+typedef struct {
+    struct Node *node;
+    char a;
+    int b;
+    float c;
+    char *p;
+} elem_t;
+
+
 
 #if defined(DataStructLinkListV4) && (DataStructLinkListV4 == 1)
 #include <time.h>
@@ -18,7 +37,7 @@ typedef struct {
     float coef; // 系数
     int expn; // 指数
 } term; // 两个类型名:term 用于 ADT; ElemType 用于 LinkList 数据类型
-#define ElemType    term
+#define ElemType term
 #endif
 
 // 有头节点

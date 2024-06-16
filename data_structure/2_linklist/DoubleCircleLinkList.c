@@ -13,35 +13,726 @@
 
 #if defined(DOUBLE_CIRCLE_LINKLIST) && (DOUBLE_CIRCLE_LINKLIST == 1)
 
-#if HAVE_TAIL_POINTER
 
 /**
- * @brief 包含头结点
- *        空链表, 仅有头结点
- *
- * @param dcl
- * @return Status
- */
-Status InitLinkList_DCL(LinkList_DCL_v2 *dcl)
+ * @brief allocatet a node space and init data 
+ * 
+ * @param[in/outt] p Node **type
+ * @param[in] e data
+ * @return success return OK, otherwise return ERROR
+*/
+Status MakeNode(struct Node **p, ElemType e)
 {
-    if (!dcl) {
+    if (!p) {
+        LOG_E("null ptr");
         return ERROR;
     }
-    // head node
-    Node_DCL *pHead = (Node_DCL*)malloc(sizeof(Node_DCL) * 1);
-    if(!pHead){
-        return ERROR;
-    }
-    pHead->data = INVALID_VAL;
-    pHead->next = pHead;
-    pHead->prev = pHead;
 
-    dcl->pHead = pHead;
-    dcl->pTail = pHead;
-    dcl->len = 0;
+    struct Node *temp = (struct Node*)malloc(sizeof(struct Node));
+    if (!temp) {
+        LOG_E("allocate failed");
+        return ERROR;
+    }
+    temp->data = e;
+    temp->next = NULL;
+    temp->prev = NULL;
+    LOG_D("malloc:%p", temp);
+
+    *p = temp;
 
     return OK;
 }
+
+/**
+ * @brief free a node allocated memory
+ * 
+ * @param[in/out] p
+*/
+void FreeNode(struct Node *p)
+{
+    if (!p) {
+        LOG_E("null ptr");
+        return;
+    }
+    free(p);
+    LOG_D("free:%p", p);
+
+    return;
+}
+
+
+/**
+ * @brief free a node allocated memory, 
+ * a empty linklist, only have a head node
+ * 
+ * @param[in] p
+*/
+Status InitList(LinkList *L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    // init a head node
+    struct Node *p_head = (struct Node*)malloc(sizeof(struct Node));
+    if (!p_head) {
+        LOG_E("allocate failed");
+        return ERROR;
+    }
+    LOG_D("head node:%p", p_head);
+    p_head->next = p_head;
+    p_head->prev = p_head;
+    p_head->data = INVALID_VAL;
+
+    // init struct LinkList
+    L->head = p_head;
+    L->tail = p_head;
+    L->len = 0;
+
+    return OK;
+}
+
+/**
+ * @brief delete all node, does not include head node
+ * 
+ * @param[in] p
+*/
+Status ClearList(LinkList *L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    size_t idx = 0;
+    // struct Node *p_prev = L->head;
+    struct Node *p_curr = L->head->next;
+
+    while (p_curr != L->head) { // 从第 1 个节点开始删除
+        struct Node *temp = p_curr;
+        // p_prev->next = p_curr->next; // 更新前一个节点的 next 指针
+        L->head->next = p_curr->next;
+        p_curr = p_curr->next; // 迭代
+        // LOG_D("delte[%d]:%p", idx++, temp);
+        FreeNode(temp); // 释放内存
+        --L->len; // 链表长度 -1
+    }
+
+    L->tail = L->head;
+
+    return OK;
+}
+
+/**
+ * @brief delete all node, include head
+ * 
+ * @param[in] p
+*/
+Status DestroyList(LinkList *L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    if (ClearList(L) != OK) // L->len = 0;
+        return ERROR;
+    
+    // free head node
+    LOG_D("free head node:%p", L->head);
+    FreeNode(L->head);
+    L->head = NULL;
+    L->tail = NULL;
+    // L->len = 0;
+
+    return OK;
+}
+
+/**
+ * @brief Insert before first node, aftet head node, 如果没有第一个节点(空链表只有头节点, 返回错误)
+ * 尽量废弃, 无法更新 LinkList 结构体
+ * 
+ * circle list structure:
+ * head -> fist -> second -> head
+ * 
+ * @param[in] h pointer to head node
+ * @param[in] s insert before first node, s become the fist node,
+*/
+Status InsFirst(struct Node *h, struct Node *s)
+{
+    // TODO:
+    // 这种不传入 LinkList 的接口, 没有办法更新链表结构 LinkList
+}
+
+/**
+ * @brief Insert before fist node
+ * 尽量废弃, 无法更新 LinkList 结构体
+ * 
+ * @param[in] h pointer to head node
+ * @param[in/out] q delete first node , return return with this pointer
+*/
+Status DelFirst(struct Node *h, struct Node **p_first)
+{
+    // TODO:
+    // 这种不传入 LinkList 的接口, 没有办法更新链表结构 LinkList
+}
+
+/**
+ * @brief append a node at tail
+ * 
+ * @param[in] L
+ * @param[in] s
+*/
+Status Append(LinkList *L, struct Node *s)
+{
+    if (!L || !s) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    // 在 L->tail 节点后插入 s
+    s->prev = L->tail;
+    s->next = L->head;
+    L->tail->next = s;
+    L->head->prev = s;
+
+    L->tail = s; // 更新 LinkList 尾指针以及长度
+    ++L->len;
+
+    return OK;
+}
+
+
+/**
+ * @brief remove tail node
+ * 
+ * @param[in] L LinkList L
+ * @param[in] q return removed Node, free memory by user
+ * @return 
+*/
+Status RemoveTail(LinkList *L, struct Node **q)
+{
+    if (!L || !q) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    struct Node *p_tail = L->tail;
+
+    if (L->tail == L->head) {
+        LOG_E("empty list");
+        return ERROR;
+    }
+
+    // delete tail node
+    p_tail->next->prev = p_tail->prev;
+    p_tail->prev->next = p_tail->next;
+
+    L->tail = p_tail->prev; // update tail ndoe
+    --L->len;
+
+    *q = p_tail;
+
+    return OK;
+}
+
+/**
+ * @brief insert s before p
+ * prev <--> s <--> p <--> next
+ *
+ * @param[in] L LinkList L
+ * @param[in] p 1.不可以是头指针;2.必须确保是链表中的节点指针(只能从数据节点中进行选择)
+ * @param[in] s 
+ * @return 
+*/
+Status InsBefore(LinkList *L, struct Node *p, struct Node *s)
+{
+    if (!L || !p || !s) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+#if 1 // 判断 p 是否有效(必须链表中已经存在的节点)
+    struct Node *curr = L->head->next;
+    while (curr != p && curr != L->head) {
+        curr = curr->next;
+    }
+    if (curr != p || curr == L->head) {
+        LOG_E("can't find node:%p data:%d", p, p->data);
+        return ERROR;
+    }
+#endif
+
+    // TODO:
+    s->prev = p->prev;
+    s->next = p;
+    p->prev->next = s;
+    p->prev = s;
+
+    // 插入的节点不可能是尾节点, 所以不用更新尾指针
+    ++L->len;
+
+    return OK;
+}
+
+/**
+ * @brief insert s after p
+ * prev <--> p <--> s <--> next
+ *
+ * @param[in] L LinkList L
+ * @param[in] p 不可以是头指针, 只能从数据节点中进行选择
+ * @param[in] s
+ * @return 
+*/
+Status InsAfter(LinkList *L, struct Node *p, struct Node *s)
+{
+    if (!L || !p || !s) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+#if 1 // 判断 p 是否有效(必须链表中已经存在的节点)
+    struct Node *curr = L->head->next;
+    while (curr != p && curr != L->head) {
+        curr = curr->next;
+    }
+    if (curr != p || curr == L->head) {
+        LOG_E("can't find node:%p data:%d", p, p->data);
+        return ERROR;
+    }
+#endif
+
+    s->prev = p;
+    s->next = p->next;
+    p->next->prev = s;
+    p->next = s;
+
+    ++L->len;
+    if (s->next == L->head) { // 更新尾指针
+        L->tail = s;
+    }
+
+    return OK;
+}
+
+/**
+ * @brief set current element
+ *
+ * @param[in] p
+ * @param[in] e
+ * @return 
+*/
+Status SetCurrElem(struct Node *p, ElemType e)
+{
+    if (!p) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    p->data = e;
+
+    return OK;
+}
+
+/**
+ * @brief get current element
+ *
+ * @param[in] p
+ * @return 
+*/
+ElemType GetCurrElem(const struct Node *p)
+{
+    if (!p) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    return p->data;
+}
+
+/**
+ * @brief list is empty
+ *
+ * @param[in] L
+ * @return 
+*/
+bool ListEmpty(const LinkList *L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    return L->len == 0;
+}
+
+size_t ListLength(const LinkList *L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    return L->len;
+}
+
+/**
+ * @brief get list head pointer, not the first node
+ *
+ * @param[in] L
+ * @return struct Node * type, otherwise return NULL
+*/
+Position GetHead(const LinkList *L)
+{
+    if (!L ) {
+        LOG_E("null ptr");
+        return NULL;
+    }
+
+    if (ListEmpty(L)) {
+        return NULL;
+    }
+
+    return L->head;
+}
+
+/**
+ * @brief get list last node's pointer, tail pointer
+ *
+ * @param[in] L
+ * @return struct Node * type
+*/
+Position GetLast(const LinkList *L)
+{
+    if (!L) {
+        LOG_E("null ptr");
+        return NULL;
+    }
+
+    if (ListEmpty(L)) {
+        return NULL;
+    }
+
+    return L->tail;
+}
+
+/**
+ * @brief get previous node
+ * 已知 p 是链表中的一个节点
+ *
+ * @param[in] L
+ * @param[in/out] p
+ * @return struct Node * type
+*/
+Position PriorPos(const LinkList *L, const struct Node *p)
+{
+    if (!L || !p) {
+        LOG_E("null ptr");
+        return NULL;
+    }
+
+    struct Node * prev = L->head;
+    struct Node *curr = L->head->next;
+
+#if 1 // 判断 p 是否有效(必须链表中已经存在的节点)
+    while (curr != p && curr != L->head) {
+        curr = curr->next;
+    }
+    if (curr != p && curr == L->head) {
+        LOG_E("can't find node:%p data:%d", p, p->data);
+        return ERROR;
+    }
+#endif
+
+    return p->prev;
+}
+
+/**
+ * @brief get next node
+ * 已知 p 是链表中的一个节点
+ *
+ * @param[in] L
+ * @param[in/out] p
+ * @return struct Node * type
+*/
+Position NextPos(const LinkList *L, const struct Node *p)
+{
+    if (!L || !p) {
+        LOG_E("null ptr");
+        return NULL;
+    }
+
+    struct Node *curr = L->head->next;
+
+#if 1 // 判断 p 是否有效(必须链表中已经存在的节点)
+    while (curr != p && curr != L->head) {
+        curr = curr->next;
+    }
+    if (curr != p && curr == L->head) {
+        LOG_E("can't find node:%p data:%d", p, p->data);
+        return ERROR;
+    }
+#endif
+
+    return curr->next;
+}
+
+/**
+ * @brief get idxth node in the list
+ *
+ * @param[in] L
+ * @param[in/out] idx start from 0
+ * @return 
+*/
+Status LocatePos(const LinkList *L, size_t i, const struct Node **p)
+{
+    if (!L || !p) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    if (i >= L->len) { // 判断过 i 的合法性
+        LOG_D("invalid idx:%ld", i);
+        return ERROR;
+    }
+
+    size_t j = 0;
+    struct Node *curr = L->head->next;
+
+    while (j < i) {
+        curr = curr->next;
+        ++j;
+    }
+
+    // 已经判断过 i 的合法性
+    *p = curr;
+
+    return OK;
+}
+
+/**
+ * @brief get element matched node
+ *
+ * @param[in] L
+ * @param[in/out] e element
+ * @param[in] compare
+ * @return struct Node * type
+*/
+Position LocateElem(const LinkList *L, ElemType e, bool (*compare)(ElemType, ElemType))
+{
+    if (!L || !compare) {
+        LOG_E("null ptr");
+        return NULL;
+    }
+
+    struct Node *curr = L->head->next;
+
+    while (curr != L->head) {
+        if (compare(curr->data, e))
+            break;
+        curr = curr->next;
+    }
+
+    if (compare(curr->data, e) == false) { // 没有遍历到
+        LOG_E("can't find node elem:%d", e);
+        return NULL;
+    }
+
+    return curr;
+}
+
+/**
+ * @brief Traverse
+ *
+ * @param[in] L
+ * @param[in/out] e element
+ * @param[in] compare
+ * @return struct Node * type
+*/
+Status ListTraverse(const LinkList *L, Status(*visit)(ElemType e))
+{
+    if (!L || !visit) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    if (!L->head || !L->tail) {
+        LOG_E("null head ptr");
+        return ERROR;
+    }
+
+    size_t i = 0;
+    struct Node *curr = L->head->next;
+
+    LOG_D("traverse:");
+    while (curr != L->head) {
+        printf("[%d]:", i++);
+        visit(curr->data);
+        curr = curr->next;
+    }
+    printf("\r\n\r\n");
+
+    return OK;
+}
+
+/**
+ * @brief Reverse Traverse
+ *
+ * @param[in] L
+ * @param[in/out] e element
+ * @param[in] compare
+ * @return struct Node * type
+*/
+Status ListReverseTraverse(const LinkList *L, Status(*visit)(ElemType e))
+{
+    if (!L || !visit) {
+        LOG_E("null ptr");
+        return ERROR;
+    }
+
+    if (!L->head || !L->tail) {
+        LOG_E("null head ptr");
+        return ERROR;
+    }
+
+    size_t i = L->len - 1;
+    struct Node *curr = L->tail;
+
+    LOG_D("reverse traverse:");
+    while (curr != L->head) {
+        printf("[%d]:", i--);
+        visit(curr->data);
+        curr = curr->prev;
+    }
+    printf("\r\n\r\n");
+
+    return OK;
+}
+
+static bool compare(ElemType a, ElemType b)
+{
+    return a == b;
+}
+
+static visit(ElemType e)
+{
+    printf("%d  ", e);
+}
+
+void DoubleCircleListTest1(void)
+{
+    LinkList l;
+    Status ret;
+    struct Node *p_node, *p_node2;
+    ElemType e;
+
+    ret = InitList(&l);
+    CHECK_RET(ret);
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    e = 100;
+    ret = MakeNode(&p_node, e);
+    CHECK_RET(ret);
+    ret = Append(&l, p_node);
+    CHECK_RET(ret);
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    MakeNode(&p_node, 200);
+    Append(&l, p_node);
+    MakeNode(&p_node, 300);
+    Append(&l, p_node);
+    MakeNode(&p_node, 400);
+    Append(&l, p_node);
+    MakeNode(&p_node, 500);
+    Append(&l, p_node);
+    MakeNode(&p_node, 600);
+    Append(&l, p_node);
+    
+    LOG_D("len:%d", ListLength(&l));
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    ret = RemoveTail(&l, &p_node);
+    CHECK_RET(ret);
+    LOG_D("removed node:%p data:%d", p_node, p_node->data);
+    FreeNode(p_node);
+    LOG_D("len:%d", ListLength(&l));
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    p_node = GetHead(&l);
+    CHECK_NOT_NULL(p_node);
+    LOG_D("head:%p", p_node);
+    p_node = NextPos(&l, p_node); // first node
+    LOG_D("first node:%p data:%d", p_node, p_node->data);
+    MakeNode(&p_node2, 1000);
+    ret = InsBefore(&l, p_node, p_node2);
+    CHECK_RET(ret);
+    MakeNode(&p_node2, 1001);
+    ret = InsAfter(&l, p_node, p_node2);
+    CHECK_RET(ret);
+    LOG_D("len:%d", ListLength(&l));
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    p_node = GetLast(&l);
+    CHECK_NOT_NULL(p_node);
+    LOG_D("tail:%p data:%d", p_node, p_node->data);
+    MakeNode(&p_node2, 2000);
+    ret = InsBefore(&l, p_node, p_node2);
+    CHECK_RET(ret);
+    MakeNode(&p_node2, 2001);
+    ret = InsAfter(&l, p_node, p_node2);
+    CHECK_RET(ret);
+    LOG_D("len:%d", ListLength(&l));
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    LOG_D("node:%p data:%d", p_node, GetCurrElem(p_node));
+    p_node = NextPos(&l, p_node);
+    LOG_D("next node:%p data:%d", p_node, GetCurrElem(p_node));
+
+    p_node = LocateElem(&l, 400, compare);
+    CHECK_NOT_NULL(p_node);
+    LOG_D("node:%p data:%d", p_node, GetCurrElem(p_node));
+
+    ret = LocatePos(&l, 2, &p_node);
+    CHECK_RET(ret);
+    LOG_D("2th node:%p data:%d", p_node, GetCurrElem(p_node));
+
+    ret = ClearList(&l);
+    CHECK_RET(ret);
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+    ret= DestroyList(&l);
+    CHECK_RET(ret);
+    ret = ListTraverse(&l, visit);
+    CHECK_RET(ret);
+    ret = ListReverseTraverse(&l, visit);
+    CHECK_RET(ret);
+
+}
+
+
+#if 0
 
 /**
  * @brief 后向遍历
@@ -430,7 +1121,11 @@ void LinkListTest_DCL1()
 
 }
 
-#else
+#endif
+
+
+// LinkList data structure does not have tail pointer
+#if 0
 /**
  * @fun 空双向循环链表, 仅有头节点
 */

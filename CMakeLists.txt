@@ -18,15 +18,20 @@ message("CMAKE_C_FLAGS:" ${CMAKE_C_FLAGS})
 # set(CMAKE_CXX_FLAGS -g)
 # message("CMAKE_CXX_FLAGS:" ${CMAKE_CXX_FLAGS})
 
+
+# TODO:
+# 可以优化的地方,通过宏来决定该文件是否编译
+# 而不是把所有的源文件都收集进去, 然后在源文件里面通过宏控制
+
 # 收集源文件
 file(GLOB SRC_LIST
     ${PROJECT_SOURCE_DIR}/util/*.c
 
     ${PROJECT_SOURCE_DIR}/data_structure/1_ADT/*.c
     ${PROJECT_SOURCE_DIR}/data_structure/2_linklist/*.c
-    ${PROJECT_SOURCE_DIR}/data_structure/3_ring_buffer/*.c
-    ${PROJECT_SOURCE_DIR}/data_structure/4_list/*.c
-    ${PROJECT_SOURCE_DIR}/data_structure/5_polynomail/*.c
+    # ${PROJECT_SOURCE_DIR}/data_structure/3_ring_buffer/*.c
+    # ${PROJECT_SOURCE_DIR}/data_structure/4_list/*.c
+    # ${PROJECT_SOURCE_DIR}/data_structure/5_polynomail/*.c
     ${PROJECT_SOURCE_DIR}/data_structure/6_stack_queue/*.c
 )
 message("SRC_LIST:" ${SRC_LIST})

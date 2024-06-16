@@ -4,6 +4,8 @@
 #include "util.h"
 #include "build_config.h"
 
+#include "CircleLinkList.h"
+
 
 static void data_structure_test(void);
 static void algorithm_test(void);
@@ -68,7 +70,17 @@ static void data_structure_test(void)
 
 #if defined(DataStructCircleLinkList) && (DataStructCircleLinkList == 1)
     // test_CL();
-    CircleLinkListTestV2();
+    TestCL();
+#endif
+
+#if defined(DataStructCircleLinkList) && (DataStructCircleLinkList == 1)
+    // test_CL();
+    TestCL();
+#endif
+
+#if defined(DataStructCircleLinkListv2) && (DataStructCircleLinkListv2 == 1)
+    // CircleListTest1();
+    CircleListTest2();
 #endif
 
 #if defined(DataStructDoubleLinkListV1) && (DataStructDoubleLinkListV1 == 1)
@@ -76,7 +88,8 @@ static void data_structure_test(void)
 #endif
 
 #if defined(DOUBLE_CIRCLE_LINKLIST) && (DOUBLE_CIRCLE_LINKLIST == 1)
-    LinkListTest_DCL2();
+    // LinkListTest_DCL2();
+    DoubleCircleListTest1();
 #endif
 
 #if defined(DATA_STRUCTURE_POLYNOMAIL) && (DATA_STRUCTURE_POLYNOMAIL == 1)

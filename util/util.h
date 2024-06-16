@@ -56,5 +56,6 @@ typedef int Status;
 
 #define SWAP(a, b)  { ElemType temp = (a); (a) = (b); (b) = temp; }
 
+#define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
 
 #endif

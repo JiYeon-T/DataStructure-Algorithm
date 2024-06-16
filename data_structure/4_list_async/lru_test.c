@@ -1,0 +1,1 @@
+#include "lru.h"lru_t *lru = NULL;void lru_test(void){    printf("lru_test\n");    lru = lru_restore();}

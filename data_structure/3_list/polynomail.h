@@ -2,6 +2,10 @@
 #define POLYNOMAIL_H_INCLUDED
 
 
+//TODO:
+// 链表应用1:
+// 一元多项式的加法 /乘法 C(x) = A(x) * B(x)
+
 // 带头节点的单向链表 - 一元多项式
 // 使用链式存储结构,顺序存储结构对于指数差异较大时, 会有很多的 0 节点,浪费空间
 // 编译该文件需要 DATA_STRUCTURE_POLYNOMAIL == 1 && DataStructLinkListV4 == 1

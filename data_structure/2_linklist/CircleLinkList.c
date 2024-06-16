@@ -15,8 +15,10 @@
 #include <limits.h>
 
 
-#if defined(CIRCLE_LINK_LIST) && (CIRCLE_LINK_LIST == 1)
+#if defined(DataStructCircleLinkList) && (DataStructCircleLinkList == 1)
 /************************************************* 没有头结点 ***************************************************************/
+// 情况较多不好处理
+#if 0
 /**
  * @brief 初始化循环链表(没有头节点)
  *        尾插法(如果没有头节点的链表就需要两个指针一个头指针, 一个尾指针，否则每次创建都要遍历)
@@ -102,7 +104,7 @@ void Test_CL()
 {
 
 }
-
+#endif
 /************************************************* 包含头结点 ***************************************************************/
 /**
  * @brief initialize a circle linklist
@@ -112,7 +114,7 @@ void Test_CL()
  * @param cl
  * @return Status
  */
-Status InitCircleLinkListV2(Node_CL **cl)
+Status InitCL(Node_CL **cl)
 {
     if (!cl) {
         return ERROR;
@@ -124,9 +126,63 @@ Status InitCircleLinkListV2(Node_CL **cl)
         printf("No enough memory\r\n");
         return ERROR;
     }
-    pHead->data = INVALID_VAL; // 只有一个头节点
+    pHead->data = INVALID_VAL; // 只有一个指向自身的头节点
     pHead->next = pHead;
     *cl = pHead;
+
+    return OK;
+}
+
+/**
+ * @brief only clear data node
+ *        does not free head node
+ * 
+ * @param cl 
+ * @return Status 
+ */
+Status ClearCL(LinkList_CL cl)
+{
+    if(!cl){
+        return ERROR;
+    }
+
+    Node_CL *pCurr = cl->next;
+
+    while (pCurr != cl){
+        Node_CL *temp = pCurr;
+        cl->next = pCurr->next; // 更新头节点的下一个节点
+        pCurr = pCurr->next;
+        free(temp); // free memory
+    }
+    
+    return OK;
+}
+
+/**
+ * @brief clear data node and head node
+ * 
+ * @param cl 
+ * @return Status 
+ */
+Status DestroyCL(LinkList_CL *cl)
+{
+    if (!cl) {
+        return ERROR;
+    }
+
+    Node_CL *pCurr = (*cl)->next;
+
+    // clear data list
+    while (pCurr != (*cl)){
+        Node_CL *temp = pCurr;
+        (*cl)->next = pCurr->next;
+        pCurr = pCurr->next;
+        free(temp); // free memory
+    }
+
+    // clear head node
+    free((*cl));
+    *cl = NULL;
 
     return OK;
 }
@@ -137,7 +193,7 @@ Status InitCircleLinkListV2(Node_CL **cl)
  * @param cl head pointer, 头结点的地址
  * @return Status
  */
-Status TraverseCLV2(LinkList_CL cl, const char *p_info)
+Status TraverseCL(const LinkList_CL cl, const char *p_info)
 {
     if (!cl) {
         return ERROR;
@@ -163,7 +219,7 @@ Status TraverseCLV2(LinkList_CL cl, const char *p_info)
  * @param cl
  * @return Status
  */
-Status InitWithArrayCLV2(Node_CL **cl, ElemType *pArr, size_t len)
+Status InitWithArrayCL(Node_CL **cl, ElemType *pArr, size_t len)
 {
     if(!cl || !pArr || len <= 0){
         return ERROR;
@@ -202,7 +258,7 @@ Status InitWithArrayCLV2(Node_CL **cl, ElemType *pArr, size_t len)
  * @param elem
  * @return Status
  */
-Status InsertHeadCLV2(LinkList_CL cl, ElemType elem)
+Status InsertHeadCL(LinkList_CL cl, ElemType elem)
 {
     if (!cl) {
         return ERROR;
@@ -225,7 +281,7 @@ Status InsertHeadCLV2(LinkList_CL cl, ElemType elem)
  * @param elem
  * @return Status
  */
-Status InsertTailCLV2(LinkList_CL cl, ElemType elem)
+Status InsertTailCL(LinkList_CL cl, ElemType elem)
 {
     if (!cl) {
         return ERROR;
@@ -256,7 +312,7 @@ Status InsertTailCLV2(LinkList_CL cl, ElemType elem)
  * @param elem 
  * @return Status 
  */
-Status RemoveElemByIdxCLV2(LinkList_CL cl, size_t idx, ElemType *elem)
+Status RemoveByIdxCL(LinkList_CL cl, size_t idx, ElemType *elem)
 {
     if(!cl || !elem || idx < 0){
         return ERROR;
@@ -290,7 +346,7 @@ Status RemoveElemByIdxCLV2(LinkList_CL cl, size_t idx, ElemType *elem)
  * @param elem 
  * @return Status 
  */
-Status ModifyElemCLV2(LinkList_CL cl, size_t idx, ElemType elem)
+Status ModifyByIdxCL(LinkList_CL cl, size_t idx, ElemType elem)
 {
     if(!cl || idx < 0){
         return ERROR;
@@ -313,14 +369,14 @@ Status ModifyElemCLV2(LinkList_CL cl, size_t idx, ElemType elem)
 }
 
 /**
- * @brief get elem
+ * @brief get element
  * 
  * @param cl 
  * @param idx index start from 0
  * @param elem 
  * @return Status 
  */
-Status GetElemCLV2(LinkList_CL cl, size_t idx, ElemType *elem)
+Status GetByIdxCL(const LinkList_CL cl, size_t idx, ElemType *elem)
 {
     if(!cl || idx < 0 || !elem){
         return ERROR;
@@ -342,147 +398,92 @@ Status GetElemCLV2(LinkList_CL cl, size_t idx, ElemType *elem)
     return OK;
 }
 
-/**
- * @brief only clear data node
- *        does not free head node
- * 
- * @param cl 
- * @return Status 
- */
-Status ClearCLV2(LinkList_CL cl)
-{
-    if(!cl){
-        return ERROR;
-    }
 
-    Node_CL *pCurr = cl->next;
-
-    while (pCurr != cl){
-        Node_CL *temp = pCurr;
-        cl->next = pCurr->next; // 更新头节点的下一个节点
-        pCurr = pCurr->next;
-        free(temp); // free memory
-    }
-    
-    return OK;
-}
-
-/**
- * @brief clear data node and head node
- * 
- * @param cl 
- * @return Status 
- */
-Status DeinitCLV2(LinkList_CL *cl)
-{
-    if (!cl) {
-        return ERROR;
-    }
-
-    Node_CL *pCurr = (*cl)->next;
-
-    // clear data list
-    while (pCurr != (*cl)){
-        Node_CL *temp = pCurr;
-        (*cl)->next = pCurr->next;
-        pCurr = pCurr->next;
-        free(temp); // free memory
-    }
-
-    // clear head node
-    free((*cl));
-    *cl = NULL;
-
-    return OK;
-}
-
-
-
-void CircleLinkListTestV2()
+void TestCL(void)
 {
     LinkList_CL cl; // 头指针
     ElemType data;
     size_t idx;
     Status ret;
 
-    ret = InitCircleLinkListV2(&cl);
+    ret = InitCL(&cl);
     CHECK_RET_OP(ret, "init");
-    ret = TraverseCLV2(cl, "init circle linklist");
+    ret = TraverseCL(cl, "init circle linklist");
     CHECK_RET_OP(ret, "init");
 
     data = 111;
     printf("insert:%d\r\n", data);
-    ret = InsertHeadCLV2(cl, data);
+    ret = InsertHeadCL(cl, data);
     CHECK_RET_OP(ret, "insert head");
-    ret = TraverseCLV2(cl, "insert head node:111");
+    ret = TraverseCL(cl, "insert head node:111");
     CHECK_RET_OP(ret, "insert");
 
     data = 25;
     printf("insert:%d\r\n", data);
-    ret = InsertTailCLV2(cl, data);
+    ret = InsertTailCL(cl, data);
     CHECK_RET_OP(ret, "insert tail");
-    ret = TraverseCLV2(cl, "insert tail node:25");
+    ret = TraverseCL(cl, "insert tail node:25");
     CHECK_RET_OP(ret, "insert");
 
     data = 100;
     printf("insert:%d\r\n", data);
-    ret = InsertHeadCLV2(cl, data);
+    ret = InsertHeadCL(cl, data);
     CHECK_RET_OP(ret, "insert head");
-    ret = TraverseCLV2(cl, "insert head node:100");
+    ret = TraverseCL(cl, "insert head node:100");
     CHECK_RET_OP(ret, "insert");
     
     data = 200;
     printf("insert:%d\r\n", data);
-    ret = InsertTailCLV2(cl, data);
+    ret = InsertTailCL(cl, data);
     CHECK_RET_OP(ret, "insert tail");
-    ret = TraverseCLV2(cl, "insert tail node:200");
+    ret = TraverseCL(cl, "insert tail node:200");
     CHECK_RET_OP(ret, "insert");
 
     idx = 1;
-    ret = RemoveElemByIdxCLV2(cl, idx, &data);
+    ret = RemoveByIdxCL(cl, idx, &data);
     CHECK_RET_OP(ret, "remove idx:1");
     printf("remove index:%d val:%d\r\n", idx, data);
-    ret = TraverseCLV2(cl, "remove idx:1");
+    ret = TraverseCL(cl, "remove idx:1");
     CHECK_RET_OP(ret, "remove");
 
     idx = 0;
     data = -100;
     printf("modify idx:%d val:%d\r\n", idx, data);
-    ret = ModifyElemCLV2(cl, idx, data);
+    ret = ModifyByIdxCL(cl, idx, data);
     CHECK_RET_OP(ret, "modify");
-    ret = TraverseCLV2(cl, "modify idx:0 val:-100");
+    ret = TraverseCL(cl, "modify idx:0 val:-100");
     CHECK_RET_OP(ret, "modify");
 
     idx = 1;
     data = -200;
     printf("modify idx:%d val:%d\r\n", idx, data);
-    ret = ModifyElemCLV2(cl, idx, data);
+    ret = ModifyByIdxCL(cl, idx, data);
     CHECK_RET_OP(ret, "modify");
-    ret = TraverseCLV2(cl, "modify idx:1 val:-200");
+    ret = TraverseCL(cl, "modify idx:1 val:-200");
     CHECK_RET_OP(ret, "modify");
 
     idx = 1;
-    ret = GetElemCLV2(cl, idx, &data);
+    ret = GetByIdxCL(cl, idx, &data);
     CHECK_RET_OP(ret, "get");
     printf("get elem index:%d val:%d\r\n", idx, data);
-    ret = TraverseCLV2(cl, "get idx:1");
+    ret = TraverseCL(cl, "get idx:1");
     CHECK_RET_OP(ret, "get");
 
     idx = 2;
-    ret = GetElemCLV2(cl, idx, &data);
+    ret = GetByIdxCL(cl, idx, &data);
     CHECK_RET_OP(ret, "get");
     printf("get elem index:%d val:%d\r\n", idx, data);
-    ret = TraverseCLV2(cl, "get idx:2");
+    ret = TraverseCL(cl, "get idx:2");
     CHECK_RET_OP(ret, "get");
 
-    ret = ClearCLV2(cl);
+    ret = ClearCL(cl);
     CHECK_RET_OP(ret, "clear");
-    ret = TraverseCLV2(cl, "clear");
+    ret = TraverseCL(cl, "clear");
     CHECK_RET_OP(ret, "clear");
 
-    ret = DeinitCLV2(&cl);
+    ret = DestroyCL(&cl);
     CHECK_RET_OP(ret, "deinit");
-    ret = TraverseCLV2(cl, "deinit");
+    ret = TraverseCL(cl, "deinit");
     CHECK_RET_OP(ret, "deinit");
 
 }

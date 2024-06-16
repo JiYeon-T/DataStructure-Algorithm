@@ -24,27 +24,50 @@
 
 #if defined(DOUBLE_CIRCLE_LINKLIST) && (DOUBLE_CIRCLE_LINKLIST == 1)
 
-#define HAVE_TAIL_POINTER       0
+#define HAVE_TAIL_POINTER 1 /* 链表数据结构中保存头尾指针 */
+#if HAVE_TAIL_POINTER
 
 typedef int ElemType;
 
-typedef struct {
-    ElemType data;
-    struct Node_DCL *prev;
-    struct Node_DCL *next;
-} Node_DCL, *LinkList_DCL;
+typedef struct Node {
+    ElemType data; // 数据域
+    struct Node *prev; // 指向前驱节点
+    struct Node *next; // 指向后继节点
+} *Link, *Position;
 
-#if HAVE_TAIL_POINTER
-// 保存头, 尾指针链表
 typedef struct  {
-    // LinkList_DCL pHead, pTail;
-    Node_DCL *pHead, *pTail;
+    struct Node *head;  // Link pHead, pTail;
+    struct Node *tail;
     size_t len;
-} LinkList_DCL_v2;
+} LinkList;
 
-Status InitLinkList_DCL(LinkList_DCL_v2 *dcl);
-Status TraverseNext_DCL(const LinkList_DCL_v2 *dcl);
-Status TraversePrev_DCL(const LinkList_DCL_v2 *dcl);
+
+Status MakeNode(struct Node **p, ElemType e);
+void FreeNode(struct Node *p);
+
+Status InitList(LinkList *L);
+Status ClearList(LinkList *L);
+Status DestroyList(LinkList *L);
+// Status InsFirst(struct Node *h, struct Node *s);
+// Status DelFirst(struct Node *h, struct Node **p_first);
+Status Append(LinkList *L, struct Node *s);
+Status RemoveTail(LinkList *L, struct Node **q);
+Status InsBefore(LinkList *L, struct Node *p, struct Node *s);
+Status InsAfter(LinkList *L, struct Node *p, struct Node *s);
+Status SetCurrElem(struct Node *p, ElemType e);
+ElemType GetCurrElem(const struct Node *p);
+bool ListEmpty(const LinkList *L);
+size_t ListLength(const LinkList *L);
+Position GetHead(const LinkList *L);
+Position GetLast(const LinkList *L);
+Position PriorPos(const LinkList *L, const struct Node *p);
+Position NextPos(const LinkList *L, const struct Node *p);
+Status LocatePos(const LinkList *L, size_t i, const struct Node **p);
+Position LocateElem(const LinkList *L, ElemType e, bool (*compare)(ElemType, ElemType));
+Status ListTraverse(const LinkList *L, Status(*visit)(ElemType e));
+Status ListReverseTraverse(const LinkList *L, Status(*visit)(ElemType e));
+
+void DoubleCircleListTest1(void);
 
 #else
 Status InitLinkList_DCL(Node_DCL **dcl);

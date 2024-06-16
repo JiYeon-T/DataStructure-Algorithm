@@ -12,9 +12,10 @@
 #define DataStructLinearListV2           0
 #define DataStructLinkListV2             0
 #define DataStructLinkListV3             0
-#define DataStructLinkListV4             0
+#define DataStructLinkListV4             1
 #define STATIC_LINK_LIST_V1              0
-#define DataStructCircleLinkList         1
+#define DataStructCircleLinkList         0
+#define DataStructCircleLinkListv2       0
 #define DataStructDoubleLinkListV1       0
 #define DOUBLE_CIRCLE_LINKLIST           0
 

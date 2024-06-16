@@ -8,7 +8,10 @@
 
 #include <stdint.h>
 
-// 这个宏有什么作用还是????
+// 通过结构图体成员获取该结构体的地址
+// <Linux 内核设计与实现> p69, 应用举例:
+// #include <linux/list.h>
+// #include <nuttx/list.h>
 #define bt_list_container_of(node, type, member) (type*)((uint32_t)node - (uint32_t)&((type*)0)->member)
 
 

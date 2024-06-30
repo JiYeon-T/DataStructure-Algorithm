@@ -6,7 +6,7 @@
 /**
  * @brief allocatet a node space and init data 
  * 
- * @param[in/outt] p Node **type
+ * @param[in/out] p Node **type
  * @param[in] e data
  * @return success return OK, otherwise return ERROR
 */

@@ -4,8 +4,10 @@
 #include <assert.h>
 #include <stdio.h>
 
+#if defined(DATA_STRUCTURE_RINGBUFFER) && (DATA_STRUCTURE_RINGBUFFER == 1)
+
 /*
-* @fun Ã¶¾ÙÀàÐÍµÄÊ¹ÓÃ
+* @fun Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½Ê¹ï¿½ï¿½
 */
 typedef enum{
     TEST_MODE_DEFAULT   = 0,
@@ -19,17 +21,17 @@ typedef enum{
 test_mode_t test_mode;
 
 /*
-* @fun: Ç¶ÈëÊ½¿ª·¢ÖÐ¾­³£Ê¹ÓÃ, ´®¿ÚÖÐ¶Ï½ÓÊÕÊý¾Ý½øÐÐ»º´æ, ·½Ê½´¦Àí¹ý³ÌÖÐµÄÊý¾Ý¸²¸Ç
-*       Ôì³ÉÊý¾Ý¶ªÊ§
-*       ³õÊ¼×´Ì¬ head = rear = 0
-*       ²åÈëÊý¾Ý head++
-*       È¡×ßÊý¾Ý rear++
+* @fun: Ç¶ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¾ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½, ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
+*       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½Ê§
+*       ï¿½ï¿½Ê¼×´Ì¬ head = rear = 0
+*       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ head++
+*       È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ rear++
 */
 #define RING_BUFFER_SIZE        128
 typedef unsigned char u8;
 #define RING_BUFFER_MASK        (RING_BUFFER_SIZE - 1)
 
-//ring buffer Êý¾Ý½á¹¹
+//ring buffer ï¿½ï¿½ï¿½Ý½á¹¹
 typedef struct{
     uint8_t buffer[RING_BUFFER_SIZE];
     uint8_t tail_index;
@@ -46,4 +48,7 @@ u8 ring_buffer_deque(ring_buffer_t *buffer, char *data);
 u8 ring_buffer_dequeue_arr(ring_buffer_t *buffer, u8 *data, u8 len);
 u8 ring_buffer_peek(ring_buffer_t *buffer, char *data, u8 index);
 void test();
+
+#endif // DATA_STRUCTURE_RINGBUFFER
+
 #endif // __RING_BUFFER_H__

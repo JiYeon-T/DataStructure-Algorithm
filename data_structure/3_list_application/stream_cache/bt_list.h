@@ -1,6 +1,9 @@
 #ifndef LIST_H_INCLUDED
 #define LIST_H_INCLUDED
 
+
+#if defined(DATA_STRUCTURE_STREAM_CACHE) && (DATA_STRUCTURE_STREAM_CACHE == 1)
+
 // call by outer class object
 #define bt_list_container_offset(node, type, member)            (type*)((uint32_t)node - (uint32_t)((type*)0)->member)
 
@@ -35,5 +38,6 @@ void bt_list_remove_all(bt_list_t *p_list);
 void bt_list_insert(bt_list_t *p_list, bt_node_t *p_insert_node, bt_node_t *p_insert_pos_node);
 void bt_list_remove(bt_list_t *p_list, bt_node_t *p_node);
 
+#endif // DATA_STRUCTURE_STREAM_CACHE
 
 #endif // LIST_H_INCLUDED

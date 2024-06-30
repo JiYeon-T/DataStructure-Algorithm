@@ -10,6 +10,7 @@
 // (1) app app queue 是如何实现的;
 // (2) 通过结构体元素获取结构体其他元素地址, service_bt_list.c;
 
+#if defined(DATA_STRUCTURE_STREAM_CACHE) && (DATA_STRUCTURE_STREAM_CACHE == 1)
 
 // define
 #define MUSIC_DATA_BLOCK_LEN        900
@@ -106,3 +107,5 @@ void list_test()
     printf("%s\r\n", __func__);
     list_test_raw();
 }
+
+#endif

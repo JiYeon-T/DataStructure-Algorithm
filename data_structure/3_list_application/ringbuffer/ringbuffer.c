@@ -1,7 +1,7 @@
 /**
  * @file ringbuffer.c
  * @author your name (you@domain.com)
- * @brief ringbuffer ³£ÓÃÔÚ´®¿Ú»º³å, ÍøÂç½ÓÊÕÊý¾ÝµÈµÈ...
+ * @brief ringbuffer ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ú»ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÈµï¿½...
  * @version 0.1
  * @date 2022-03-26
  *
@@ -10,11 +10,14 @@
  */
 #include "ringbuffer.h"
 
+#if defined(DATA_STRUCTURE_RINGBUFFER) && (DATA_STRUCTURE_RINGBUFFER == 1)
+
+
 // definition
 test_mode_t test_mode;
 
 /*
-* @fun: ring buffer ³õÊ¼»¯
+* @fun: ring buffer ï¿½ï¿½Ê¼ï¿½ï¿½
 */
 void ring_buffer_init(ring_buffer_t *buffer)
 {
@@ -25,7 +28,7 @@ void ring_buffer_init(ring_buffer_t *buffer)
 }
 
 /*
-* @fun: ÅÐ¶Ï ring buffer ÊÇ·ñÂú, Èý¸öÆµ·±µ÷ÓÃµÄº¯Êý, ×ö³ÉÄÚÁªº¯Êý
+* @fun: ï¿½Ð¶ï¿½ ring buffer ï¿½Ç·ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄºï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 uint8_t ring_buffer_is_full(ring_buffer_t *buffer)
 {
@@ -34,7 +37,7 @@ uint8_t ring_buffer_is_full(ring_buffer_t *buffer)
 }
 
 /*
-* @fun:ÅÐ¶Ïringbuffer ÊÇ·ñÎª¿Õ
+* @fun:ï¿½Ð¶ï¿½ringbuffer ï¿½Ç·ï¿½Îªï¿½ï¿½
 */
 uint8_t ring_buffer_is_empty(ring_buffer_t *buffer)
 {
@@ -42,7 +45,7 @@ uint8_t ring_buffer_is_empty(ring_buffer_t *buffer)
 }
 
 /*
-* @fun: »ñÈ¡ÔªËØ¸öÊý
+* @fun: ï¿½ï¿½È¡Ôªï¿½Ø¸ï¿½ï¿½ï¿½
 */
 u8 ring_buffer_num_items(ring_buffer_t *buffer)
 {
@@ -50,8 +53,8 @@ u8 ring_buffer_num_items(ring_buffer_t *buffer)
 }
 
 /*
-* @fun: ´æ´¢:±£´æÍ·Ö¸ÕëµÄÖ¸ÏòµÄÎ»ÖÃ, head++
-*       Èç¹ûÂúÁË, Î²Ö¸ÕëºóÒÆ¶¯Ò»¸öÎ»ÖÃ
+* @fun: ï¿½æ´¢:ï¿½ï¿½ï¿½ï¿½Í·Ö¸ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Î»ï¿½ï¿½, head++
+*       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Î²Ö¸ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ò»ï¿½ï¿½Î»ï¿½ï¿½
 */
 void ring_buffer_queue(ring_buffer_t *buffer, u8 data)
 {
@@ -68,7 +71,7 @@ void ring_buffer_queue(ring_buffer_t *buffer, u8 data)
 }
 
 /*
-* @fun: ÅúÁ¿´æ´¢Êý¾Ý
+* @fun: ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½
 */
 void ring_buffer_queue_arr(ring_buffer_t *buffer, const char *data, u8 len)
 {
@@ -79,7 +82,7 @@ void ring_buffer_queue_arr(ring_buffer_t *buffer, const char *data, u8 len)
 }
 
 /*
-* @fun:È¡³öÊý¾Ý
+* @fun:È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 * @param[in]  buffer
 * @param[out] data
 */
@@ -94,7 +97,7 @@ u8 ring_buffer_deque(ring_buffer_t *buffer, char *data)
 }
 
 /*
-* @fun: ÅúÁ¿¶Á³öÔªËØ
+* @fun: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 * @param[in]  buffer
 * @param[out] data
 * @param[in]  len
@@ -116,10 +119,10 @@ u8 ring_buffer_dequeue_arr(ring_buffer_t *buffer, u8 *data, u8 len)
 }
 
 /*
-* @fun:²é¿´ ring_buffer ÖÐµÄÔªËØ, ²»½øÐÐÖ¸ÕëÆ«ÒÆ
+* @fun:ï¿½é¿´ ring_buffer ï¿½Ðµï¿½Ôªï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Æ«ï¿½ï¿½
 * @param[in]  buffer
 * @param[out] data
-* @param[in]  index Òª²é¿´µÄÔªËØµÄÆ«ÒÆÁ¿(µÚ¼¸¸öÔªËØ)
+* @param[in]  index Òªï¿½é¿´ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½(ï¿½Ú¼ï¿½ï¿½ï¿½Ôªï¿½ï¿½)
 */
 u8 ring_buffer_peek(ring_buffer_t *buffer, char *data, u8 index)
 {
@@ -133,8 +136,8 @@ u8 ring_buffer_peek(ring_buffer_t *buffer, char *data, u8 index)
 }
 
 /*
-* @fun: Ä£¿é²âÊÔº¯Êý
-*       ºÚºÐ²âÊÔ, °×ºÐ²âÊÔ, É³Ïä²âÊÔ¶¼ÊÇÊ²Ã´¶«Î÷
+* @fun: Ä£ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½
+*       ï¿½ÚºÐ²ï¿½ï¿½ï¿½, ï¿½×ºÐ²ï¿½ï¿½ï¿½, É³ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Ê²Ã´ï¿½ï¿½ï¿½ï¿½
 */
 #if 0
 void test()
@@ -146,7 +149,7 @@ void test()
     ring_buffer_t ring_buffer;
     ring_buffer_init(&ring_buffer);
 
-    //²åÈëÔªËØ
+    //ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
     for(i = 0; i < 100; ++i){
         ring_buffer_queue(&ring_buffer, i);
     }
@@ -173,12 +176,12 @@ void test()
     }
 
     printf("\n==============================\n");
-    //²åÈëÔªËØ
+    //ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
     ring_buffer_queue_arr(&ring_buffer, "hello, world", 13);
     assert(!ring_buffer_is_empty(&ring_buffer)); // assert
 
     printf("\n==============================\n");
-    //È¡³öÔªËØ
+    //È¡ï¿½ï¿½Ôªï¿½ï¿½
     cnt = ring_buffer_dequeue_arr(&ring_buffer, buf_arr, 13);
     printf("cnt = %d\n", cnt);
     assert(cnt == 13);
@@ -210,7 +213,7 @@ void enum_type_test()
     print(TEST_MODE_MAX);
 }
 
-// ÁªºÏÌå
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 typedef struct _type
 {
   	uint8_t head;
@@ -247,15 +250,6 @@ int main()
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
+#endif // DATA_STRUCTURE_RINGBUFFER
 
 

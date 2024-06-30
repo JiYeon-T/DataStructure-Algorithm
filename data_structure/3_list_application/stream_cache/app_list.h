@@ -5,8 +5,8 @@
 
 
 // 链表的使用:
-// 法1. 将成员放到 ElemType 中;
-// 法2. 链表的 node 作为结构体成员, #include <nuttx/list.h>
+
+#if defined(DATA_STRUCTURE_STREAM_CACHE) && (DATA_STRUCTURE_STREAM_CACHE == 1)
 
 // 在音频数据，mic 数据，铃声数据缓冲等场景作为缓冲队列使用
 
@@ -20,5 +20,6 @@ typedef enum
 void music_init();
 
 void list_test();
+#endif //DATA_STRUCTURE_STREAM_CACHE
 
 #endif // APP_LIST_H_INCLUDED

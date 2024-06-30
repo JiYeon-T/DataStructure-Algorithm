@@ -1,6 +1,7 @@
 #include "service_bt_music.h"
 #include "list.h"
 
+#if defined(DATA_STRUCTURE_STREAM_CACHE) && (DATA_STRUCTURE_STREAM_CACHE == 1)
 
 // cache queue node
 typedef struct
@@ -11,4 +12,6 @@ typedef struct
 } data_block_t;
 
 
-bool service_bt_music_load_data()
+bool service_bt_music_load_data();
+
+#endif // DATA_STRUCTURE_STREAM_CACHE

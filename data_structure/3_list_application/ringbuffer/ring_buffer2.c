@@ -1,4 +1,7 @@
-#include "ring_buffer.h"
+#include "ring_buffer2.h"
+
+
+#if defined(DATA_STRUCTURE_RINGBUFFER) && (DATA_STRUCTURE_RINGBUFFER == 1)
 
 unsigned int RingBufferPut(RingBuffer_t *ring_buff_p, void *buffer, uint32_t size)
 {
@@ -56,3 +59,5 @@ void print_ring_buffer()
 {
     printf("This is a ring buffer;\n");
 }
+
+#endif // DATA_STRUCTURE_RINGBUFFER

@@ -29,7 +29,8 @@ file(GLOB SRC_LIST
 
     ${PROJECT_SOURCE_DIR}/data_structure/1_ADT/*.c
     ${PROJECT_SOURCE_DIR}/data_structure/2_linklist/*.c
-    # ${PROJECT_SOURCE_DIR}/data_structure/3_ring_buffer/*.c
+    ${PROJECT_SOURCE_DIR}/data_structure/3_list_application/*.c
+    ${PROJECT_SOURCE_DIR}/data_structure/3_list_application/*/*.c
     # ${PROJECT_SOURCE_DIR}/data_structure/4_list/*.c
     # ${PROJECT_SOURCE_DIR}/data_structure/5_polynomail/*.c
     ${PROJECT_SOURCE_DIR}/data_structure/6_stack_queue/*.c
@@ -42,7 +43,8 @@ include_directories(
 
     ${PROJECT_SOURCE_DIR}/data_structure/1_ADT
     ${PROJECT_SOURCE_DIR}/data_structure/2_linklist
-    ${PROJECT_SOURCE_DIR}/data_structure/3_ring_buffer
+    ${PROJECT_SOURCE_DIR}/data_structure/3_list_application
+    ${PROJECT_SOURCE_DIR}/data_structure/3_list_application/polynomail
     ${PROJECT_SOURCE_DIR}/data_structure/4_list
     ${PROJECT_SOURCE_DIR}/data_structure/5_polynomail
     ${PROJECT_SOURCE_DIR}/data_structure/6_stack_queue

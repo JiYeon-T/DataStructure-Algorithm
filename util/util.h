@@ -12,13 +12,14 @@
 
 #include "log.h"
 /****************************************************************************
- * COMMON MACRO
+ * MACRO
  ****************************************************************************/
 #define OK                  (0)
 #define ERROR               (-1)
 #define TRUE                (1)
 #define FALSE               (0)
 #define INVALID_VAL         (INT_MAX)
+#define INVALID_PTR         (NULL)
 
 #define CHECK_RET(ret)                  \
     do {                                \
@@ -52,10 +53,18 @@
         }                           \
     } while (0)
 
-typedef int Status;
 
 #define SWAP(a, b)  { ElemType temp = (a); (a) = (b); (b) = temp; }
 
 #define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
+/****************************************************************************
+ * Type Prototype
+ ****************************************************************************/
+typedef int Status;
+
+typedef enum {
+    FROM_SMALL_TO_BIG,
+    FROM_BIG_TO_SMALL
+} SORT_TYPE_E;
 
 #endif

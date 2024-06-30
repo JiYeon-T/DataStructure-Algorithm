@@ -4,10 +4,9 @@
 #include "util.h"
 #include "build_config.h"
 
-// 没有头节点的单向链表
+// 没有头节点的单向链表(useless)
 // 插入/删除第一个节点/最后一个节点的情况稍微复杂一点点, 需要特殊处理
-// TODO:
-// 翻转链表
+
 
 #if defined(DataStructLinkListV3) && (DataStructLinkListV3 == 1)
 typedef int ElemType;

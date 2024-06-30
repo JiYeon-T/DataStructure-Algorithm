@@ -5,6 +5,7 @@
 #include "build_config.h"
 
 #include "CircleLinkList.h"
+#include "LinkListv4.h"
 
 
 static void data_structure_test(void);
@@ -34,28 +35,35 @@ static void data_structure_test(void)
 
 #if defined(DataStructLinearListV1) && (DataStructLinearListV1 == 1)
     // LinearListV1Test();
-    LinearListV1Test2();
+    // LinearListV1Test2();
 #endif
 
 
 #if defined(DataStructLinearListV2) && (DataStructLinearListV2 == 1)
     // LinearListV2Test();
-    LinearListV2Test2();
+    // LinearListV2Test2();
 #endif
 
 #if defined(DataStructLinkListV2) && (DataStructLinkListV2 == 1)
     // linklist_api_test();
-    linklist_api_test2();
+    // linklist_api_test2();
     // LinkListTest3();
 #endif
 
 #if defined(DataStructLinkListV3) && (DataStructLinkListV3 == 1)
     // linklist_api_test();
-    linklist_api_test2();
+    // linklist_api_test2();
 #endif
 
 #if defined(DataStructLinkListV4) && (DataStructLinkListV4 == 1)
+    // linklist_api_test_integer();
+    // linklist_api_test_string();
+    // linklist_api_integer_test2();
+#endif
+
+#if defined(DataStructApplicationLinkList) && (DataStructApplicationLinkList == 1)
     // struct_member_size_test();
+    app_linklist_api_test1();
     // LinkListTest3();
     // linklist_api_test4();    
     // LinkListTest5();
@@ -97,7 +105,7 @@ static void data_structure_test(void)
     PolynTest2();
 #endif
 
-#if CACHE_TEST
+#if STREAM_CACHE_TEST
     list_test();
 #endif
 

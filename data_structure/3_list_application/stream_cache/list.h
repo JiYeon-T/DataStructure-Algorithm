@@ -7,6 +7,7 @@
 #define LIST_H_INCLUDED
 
 #include <stdint.h>
+#if defined(DATA_STRUCTURE_STREAM_CACHE) && (DATA_STRUCTURE_STREAM_CACHE == 1)
 
 // 通过结构图体成员获取该结构体的地址
 // <Linux 内核设计与实现> p69, 应用举例:
@@ -20,7 +21,7 @@
 //#define bt_list_container_of(node, type, member) (type*)((uint32_t)node - offsetof(type, member))
 
 // 双向链表内部测试使用
-#define INNER_LIST_TEST         0
+#define INNER_LIST_TEST        0
 
 // typedef
 typedef struct node
@@ -122,5 +123,6 @@ void list_remove_node(list_t *p_list, node_t *p_node);
 
 void list_test_raw();
 
+#endif // DATA_STRUCTURE_STREAM_CACHE
 
 #endif // LIST_H_INCLUDED

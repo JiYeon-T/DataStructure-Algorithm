@@ -2,10 +2,11 @@
 #include "string.h"
 #include "stdlib.h"
 
+#if defined(DATA_STRUCTURE_STREAM_CACHE) && (DATA_STRUCTURE_STREAM_CACHE == 1)
 
-// Ë«ÏòÁ´±íµÄÍ·½áµãµÄÏÂÒ»¸ö½ÚµãÖ¸ÏòÍ·½áµã; Í·½áµãµÄÉÏÒ»¸ö½ÚµãÖ¸Ïò×îºóÒ»¸ö½Úµã
-// head node ÊÇ½á¹¹ÌåÀàĞÍ, ¶ø²»ÊÇ½á¹¹ÌåÖ¸Õë
-// ·µ»ØµÄÊÇÖ¸ÕëÀàĞÍ
+// Ë«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½Ö¸ï¿½ï¿½Í·ï¿½ï¿½ï¿½; Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
+// head node ï¿½Ç½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ç½á¹¹ï¿½ï¿½Ö¸ï¿½ï¿½
+// ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define P_FIRSTNODE   head_node.p_next
 #define P_LASTNODE    head_node.p_prev
 
@@ -13,8 +14,8 @@
 
 
 /**
-* @fun: ³õÊ¼»¯Ò»¸ö½Úµã
-* @desc: Ö¸Ïò×Ô¼º
+* @fun: ï¿½ï¿½Ê¼ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
+* @desc: Ö¸ï¿½ï¿½ï¿½Ô¼ï¿½
 */
 void node_init(node_t *p_node, int data)
 {
@@ -29,7 +30,7 @@ void node_init(node_t *p_node, int data)
 }
 
 /**
-* @fun: Ë«ÏòÁ´±í³õÊ¼»¯
+* @fun: Ë«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 * @desc:
 */
 void list_init(list_t *p_list)
@@ -52,12 +53,12 @@ uint32_t list_node_count_get(list_t *p_list)
 
 node_t* list_head(list_t *p_list)
 {
-    return &p_list->head_node; // ¶¼ÊÇµ¥Ä¿ÔËËã·û, ¼ÆËãË³Ğò´ÓÓÒÏò×ó
+    return &p_list->head_node; // ï¿½ï¿½ï¿½Çµï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 /**
-* @fun: µÚÒ»¸ö½Úµã(²»°üÀ¨Í·½Úµã)
-* @desc: Í·½áµãµÄ p_next Ö¸ÏòµÚÒ»¸ö½Úµã
+* @fun: ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Úµï¿½)
+* @desc: Í·ï¿½ï¿½ï¿½ï¿½ p_next Ö¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
 */
 node_t* list_first(list_t *p_list)
 {
@@ -69,8 +70,8 @@ node_t* list_first(list_t *p_list)
 }
 
 /**
-* @fun: ×îºóÒ»¸ö½Úµã(Í·½ÚµãµÄÇ°Ò»¸ö½Úµã)
-* @desc: Í·½áµãµÄ p_prev Ö¸Ïò×îºóÒ»¸ö½Úµã
+* @fun: ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½(Í·ï¿½Úµï¿½ï¿½Ç°Ò»ï¿½ï¿½ï¿½Úµï¿½)
+* @desc: Í·ï¿½ï¿½ï¿½ï¿½ p_prev Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
 */
 node_t* list_last(list_t *p_list)
 {
@@ -82,8 +83,8 @@ node_t* list_last(list_t *p_list)
 }
 
 /**
-* @fun: »ñÈ¡Ç°Ò»¸ö½Úµã
-* @desc: Í·½áµãµÄ p_prev Ö¸Ïò×îºóÒ»¸ö½Úµã
+* @fun: ï¿½ï¿½È¡Ç°Ò»ï¿½ï¿½ï¿½Úµï¿½
+* @desc: Í·ï¿½ï¿½ï¿½ï¿½ p_prev Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
 */
 node_t* list_prev(list_t *p_list, node_t *p_node)
 {
@@ -95,7 +96,7 @@ node_t* list_prev(list_t *p_list, node_t *p_node)
 }
 
 /**
-* @fun: »ñÈ¡ºóÒ»¸ö½Úµã
+* @fun: ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
 * @desc:
 */
 node_t* list_next(list_t *p_list, node_t *p_node)
@@ -107,19 +108,19 @@ node_t* list_next(list_t *p_list, node_t *p_node)
 }
 
 /**
-* @fun: É¾³ıËùÓĞ½Úµã
-* @desc: ÕâÀïÃ»ÓĞÊÍ·Å×ÊÔ´, ½ö½öÊÇ½«Á´±íµÄÃ¿¸ö½Úµã¶¼²ğ¿ª
+* @fun: É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ğ½Úµï¿½
+* @desc: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½Ô´, ï¿½ï¿½ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Úµã¶¼ï¿½ï¿½
 */
 void list_remove_all(list_t *p_list)
 {
     uint32_t count;
     node_t *p_temp;
 
-    p_temp = p_list->P_FIRSTNODE; // µÚÒ»¸ö½Úµã(°üº¬Í·½áµã)
+    p_temp = p_list->P_FIRSTNODE; // ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½(ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½)
     for(count = p_list->node_count; count != 0; --count){
         node_t *curr_node = p_temp;
         p_temp = p_temp->p_next;
-        curr_node->p_next = curr_node; // ÉêÇëµÄÄÚ´æ²»ÊÍ·ÅÂğ£¿ÈÃÃ¿Ò»¸ö½Úµã¶¼Ö¸Ïò×Ô¼º
+        curr_node->p_next = curr_node; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´æ²»ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿Ò»ï¿½ï¿½ï¿½Úµã¶¼Ö¸ï¿½ï¿½ï¿½Ô¼ï¿½
         curr_node->p_prev = curr_node;
     }
     p_list->P_FIRSTNODE = &(p_list->head_node);
@@ -131,7 +132,7 @@ void list_remove_all(list_t *p_list)
 }
 
 /**
-* @fun: Í·²¿²åÈëµÚÒ»¸ö½Úµã(²»°üÀ¨Í·½Úµã)
+* @fun: Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Úµï¿½)
 * @desc:
 */
 void list_add_first(list_t *p_list, node_t *p_node)
@@ -145,7 +146,7 @@ void list_add_first(list_t *p_list, node_t *p_node)
 }
 
 /**
-* @fun: ²åÈë×îºóÒ»¸ö½Úµã(Î²²¿²åÈë)
+* @fun: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½(Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 * @desc:
 */
 void list_add_last(list_t *p_list, node_t *p_node)
@@ -159,9 +160,9 @@ void list_add_last(list_t *p_list, node_t *p_node)
 }
 
 /**
-* @fun: É¾³ıµÚÒ»¸ö½Úµã(²»°üÀ¨Í·½Úµã)
+* @fun: É¾ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Úµï¿½)
 * @desc:
-* @ret: ·µ»ØÖ¸ÏòµÚÒ»¸ö½ÚµãµÄÖ¸Õë
+* @ret: ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½ï¿½Ö¸ï¿½ï¿½
 */
 node_t* list_remove_first(list_t *p_list)
 {
@@ -170,7 +171,7 @@ node_t* list_remove_first(list_t *p_list)
         return NULL;
     }
 
-    p_temp = p_list->P_FIRSTNODE; // È¡³öµÚÒ»¸ö½Úµã
+    p_temp = p_list->P_FIRSTNODE; // È¡ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
     p_temp->p_next->p_prev = &(p_list->head_node);
     p_list->P_FIRSTNODE = p_temp->p_next;
     --p_list->node_count;
@@ -178,9 +179,9 @@ node_t* list_remove_first(list_t *p_list)
 }
 
 /**
-* @fun: (ºó)²åÈë½Úµã
-* @param: p_pos_node ÔÚ p_pos_node ºó²åÈë½Úµã
-* @param: p_node Òª²åÈëµÄ½Úµã
+* @fun: (ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½Úµï¿½
+* @param: p_pos_node ï¿½ï¿½ p_pos_node ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½
+* @param: p_node Òªï¿½ï¿½ï¿½ï¿½Ä½Úµï¿½
 * @desc:
 */
 void list_insert(list_t *p_list, node_t *p_pos_node, node_t *p_node)
@@ -188,14 +189,14 @@ void list_insert(list_t *p_list, node_t *p_pos_node, node_t *p_node)
     p_node->p_next = p_pos_node->p_next;
     p_node->p_prev = p_pos_node;
     p_pos_node->p_next->p_prev = p_node;
-    p_pos_node->p_next = p_node; // ×îºó¸üĞÂÒª²åÈëµÄ½Úµã
+    p_pos_node->p_next = p_node; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ä½Úµï¿½
     ++p_list->node_count;
     return;
 }
 
 /**
-* @fun: É¾³ıÒ»¸ö½Úµã
-* @desc: Ã»ÓĞÊÍ·ÅÄÚ´æ, ÄÚ´æÓÉÊ¹ÓÃ¸Ã¶ÓÁĞµÄÒ»ÆğÉêÇëºÍÊÍ·Å
+* @fun: É¾ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
+* @desc: Ã»ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ú´ï¿½, ï¿½Ú´ï¿½ï¿½ï¿½Ê¹ï¿½Ã¸Ã¶ï¿½ï¿½Ğµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½
 */
 void list_remove_node(list_t *p_list, node_t *p_node)
 {
@@ -207,7 +208,7 @@ void list_remove_node(list_t *p_list, node_t *p_node)
 
 #if INNER_LIST_TEST
 /**
-* @fun: ±éÀúÁ´±í, ²âÊÔÊ¹ÓÃ
+* @fun: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
 * @desc:
 */
 static void list_traverse(list_t *p_list)
@@ -273,6 +274,7 @@ void list_test_raw()
 #endif
 }
 
+#endif // DATA_STRUCTURE_STREAM_CACHE
 
 
 

@@ -6,6 +6,9 @@
 #include <string.h>
 #include <stdint.h>
 
+#if defined(DATA_STRUCTURE_RINGBUFFER) && (DATA_STRUCTURE_RINGBUFFER == 1)
+
+
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define RING_BUFFER_SIZE            4092
 
@@ -22,5 +25,7 @@ unsigned int RingBufferGet(RingBuffer_t *ring_buffer_p, void *buffer, uint32_t s
 unsigned int RingBufferLen(const RingBuffer_t *ring_buffer_p);
 void RingBufferClear(RingBuffer_t *ring_buffer_p);
 void print_ring_buffer();
+
+#endif // DATA_STRUCTURE_RINGBUFFER
 
 #endif // __RING_BUFFER_H__

@@ -18,8 +18,14 @@ item1:[key][len][value][CRC/sumcheck]
 
 
 ##### 1.创建了一个与数据结构与算法强化有关的项目，用于日常的算法积累与coding练习。
+<<<<<<< Updated upstream
 Talk is cheap, show me the code.-Linus Towards
 
+=======
+Talk is cheap, show me the code.
+TODO:
+1. kfifo
+>>>>>>> Stashed changes
 
 ##### 2. 通过时间戳计算公历时间的计算算法，肯定可以优化
 

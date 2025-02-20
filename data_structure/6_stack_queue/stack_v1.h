@@ -1,9 +1,14 @@
 #ifndef __STACK_V1_H__
 #define __STACK_V1_H__
 
+<<<<<<< Updated upstream:data_structure/6_stack_queue/stack_v1.h
 #include <stddef.h>
 
 // 顺序存储的栈
+=======
+#include <stdbool.h>
+
+>>>>>>> Stashed changes:data_structure/5_stack_queue/stack_v1.h
 
 typedef int Status;
 #define OK      1
@@ -34,6 +39,21 @@ typedef struct{
     size_t top;
     int size;
 } Stack_v2;
+
+// 外部函数使用特殊的元素类型, 需要修改这个变量
+
+
+void SetPrintFormat(pPrintFun fun);
+Status InitStack(Stack *s);
+Status ClearStack(Stack *s);
+bool EmptyStack(const Stack *s);
+int StackSize(const Stack *s);
+Status GetTop(const Stack *s, ElemType *e);
+Status Push(Stack *s, ElemType *e);
+Status Pop(Stack *s, ElemType *e);
+Status StackTraverse(const Stack *s);
+Status InverseTraverseStack(const Stack *s);
+Status DeinitStack(Stack *s);
 
 
 void StackTest1();

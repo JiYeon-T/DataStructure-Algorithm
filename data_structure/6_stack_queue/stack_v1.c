@@ -11,7 +11,7 @@
 #include "stack_v1.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+
 
 
 /**
@@ -24,7 +24,7 @@
 static void print_int_elem(void *param);
 
 // 元素
-pPrintFun _print_fun = print_int_elem;
+static pPrintFun _print_fun = print_int_elem;
 
 /**
  * @brief 打印函数
@@ -35,6 +35,18 @@ static void print_int_elem(void *param)
 {
     printf("    %d\r\n", *(ElemType*)(param));
 }
+
+/**
+ * @brief set print format fun
+ * 
+ * @param fun 
+ */
+void SetPrintFormat(pPrintFun fun)
+{
+    _print_fun = fun;
+}
+
+
 
 /**
  * @brief Init a empty stack
@@ -197,9 +209,9 @@ Status Pop(Stack *s, ElemType *e)
  * 
  * @param s 
  */
-static void StackTraverse(const Stack *s)
+Status StackTraverse(const Stack *s)
 {
-    if(!s || !s->base || !s->base){
+    if(!s || !s->base || !s->top){
         return ERROR;
     }
 
@@ -216,7 +228,31 @@ static void StackTraverse(const Stack *s)
     }
     printf("\r\n");
 
-    return;
+    return OK;
+}
+
+/**
+ * @brief from base to top
+ * 
+ * @param s 
+ * @return Status 
+ */
+Status InverseTraverseStack(const Stack *s)
+{
+    if(!s || !s->base || !s->top){
+        return ERROR;
+    }
+
+    ElemType *temp = s->base;
+
+    printf("InverseTraverse:\r\n");
+    while(temp != s->top){
+        _print_fun(temp);
+        ++temp;
+    }
+    printf("\r\n");
+
+    return OK;
 }
 
 /**
@@ -255,13 +291,14 @@ void StackTest1()
         printf("ERROR\r\n");
     }
     StackTraverse(&s);
-
+    InverseTraverseStack(&s);
     data = 999;
     printf("push data:%d\r\n", data);
     if(Push(&s, &data) != OK){
         printf("ERROR\r\n");
     }
     StackTraverse(&s);
+    InverseTraverseStack(&s);
 
     data = 89;
     printf("push data:%d\r\n", data);
@@ -269,6 +306,7 @@ void StackTest1()
         printf("ERROR\r\n");
     }
     StackTraverse(&s);
+    InverseTraverseStack(&s);
 
     data = 52;
     printf("push data:%d\r\n", data);
@@ -276,21 +314,24 @@ void StackTest1()
         printf("ERROR\r\n");
     }
     StackTraverse(&s);
+    InverseTraverseStack(&s);
 
     if(GetTop(&s, &data) != OK){
         printf("ERROR\r\n");
     }
     printf("Get top data:%d\r\n", data);
     StackTraverse(&s);
+    InverseTraverseStack(&s);
 
     Pop(&s, &data);
     printf("Pop data:%d\r\n", data);
     StackTraverse(&s);
+    InverseTraverseStack(&s);
 
     Pop(&s, &data);
     printf("Pop data:%d\r\n", data);
     StackTraverse(&s);
-
+    InverseTraverseStack(&s);
 
 }
 
